@@ -113,7 +113,7 @@ abstract class AbstractParser
     /**
      * Checks if the surce needs to be updated and processes the update
      */
-    abstract public function update();
+    abstract public function update($forceUpdate = false);
 
     /**
      * Resets cached data (e.g. the version) after an update of the source

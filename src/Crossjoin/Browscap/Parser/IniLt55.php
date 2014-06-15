@@ -121,7 +121,7 @@ extends AbstractParser
     /**
      * Checks if the surce needs to be updated and processes the update
      */
-    public function update()
+    public function update($forceUpdate = false)
     {
         // get updater
         $updater = \Crossjoin\Browscap\Browscap::getUpdater();
@@ -133,7 +133,7 @@ extends AbstractParser
             $readable = is_readable($path);
             if ($readable) {
                 $localts = filemtime($path);
-                $update  = ((time() - $localts) >= $updater->getInterval());
+                $update  = $forceUpdate || ((time() - $localts) >= $updater->getInterval());
             } else {
                 $localts = 0;
                 $update  = true;

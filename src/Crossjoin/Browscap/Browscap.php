@@ -122,6 +122,15 @@ class Browscap
         return $return;
     }
 
+	/**
+	 * Triggers an update.
+	 * @param boolean $forceUpdate
+	 */
+	public static function update($forceUpdate = false)
+	{
+		self::getParser()->update($forceUpdate);
+	}
+
     /**
      * Set theformatter instance to use for the getBrowser() result
      *
