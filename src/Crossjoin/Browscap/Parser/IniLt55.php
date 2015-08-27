@@ -112,13 +112,13 @@ extends AbstractParser
         $formatter = null;
 
         foreach ($this->getPatterns($user_agent) as $patterns) {
-            if (preg_match("/^(?:" . str_replace("\t", ")|(?:", $this->pregQuote($patterns)) . ")$/i", $user_agent)) {
+            if (preg_match("/^(?:" . str_replace("\t", ")|(?:", $patterns) . ")$/i", $user_agent)) {
                 // strtok() requires less memory than explode()
                 $pattern = strtok($patterns, "\t");
                 while ($pattern !== false) {
-                    if (preg_match("/^" . $this->pregQuote($pattern) . "$/i", $user_agent)) {
+                    if (preg_match("/^" . $pattern . "$/i", $user_agent)) {
                         $formatter = Browscap::getFormatter();
-                        $formatter->setData($this->getSettings($pattern));
+                        $formatter->setData($this->getSettings($this->pregUnQuote($pattern)));
                         break 2;
                     }
                     $pattern = strtok("\t");
@@ -355,7 +355,7 @@ extends AbstractParser
                 if (!isset($data[$tmp_start][$tmp_length])) {
                     $data[$tmp_start][$tmp_length] = array();
                 }
-                $data[$tmp_start][$tmp_length][] = $match;
+                $data[$tmp_start][$tmp_length][] = $this->pregQuote($match);
             }
 
             // sorting of the data is important to check the patterns later in the correct order, because
@@ -587,7 +587,7 @@ extends AbstractParser
 
         // use lowercase string to make the match case insensitive
         $string = strtolower($string);
-        
+
         if ($variants === true) {
             $pattern_starts = array();
             for ($i = strlen($string); $i >= 1; $i--) {
@@ -629,5 +629,31 @@ extends AbstractParser
         // The \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
         // @source https://github.com/browscap/browscap-php
         return str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern);
+    }
+
+    /**
+     * Removes quote characters from regex
+     *
+     * From https://github.com/browscap/browscap-php
+     *
+     * @param string $pattern
+     * @return string
+     */
+    protected function pregUnQuote($pattern)
+    {
+        // list of escaped characters: http://www.php.net/manual/en/function.preg-quote.php
+        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?', then change '.' to '?' and then '\?' to '.'.
+        $search  = array(
+            '\\' . '/', '\\.', '\\\\', '\\+', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}',
+            '\\=', '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '.*', '.', '\\?'
+        );
+        $replace = array(
+            '/', '\\?', '\\', '+', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|',
+            ':', '-', '*', '?', '.'
+        );
+
+        $result = str_replace($search, $replace, $pattern);
+
+        return $result;
     }
 }
