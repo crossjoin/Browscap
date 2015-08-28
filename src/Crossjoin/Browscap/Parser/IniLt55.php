@@ -112,13 +112,23 @@ extends AbstractParser
         $formatter = null;
 
         foreach ($this->getPatterns($user_agent) as $patterns) {
-            if (preg_match("/^(?:" . str_replace("\t", ")|(?:", $this->pregQuote($patterns)) . ")$/i", $user_agent)) {
+            if (preg_match('@^(?:' . str_replace("\t", ')|(?:', $patterns) . ')$@i', $user_agent)) {
                 // strtok() requires less memory than explode()
                 $pattern = strtok($patterns, "\t");
                 while ($pattern !== false) {
-                    if (preg_match("/^" . $this->pregQuote($pattern) . "$/i", $user_agent)) {
+                    if (preg_match('@^' . $pattern . '$@i', $user_agent, $matches)) {
+                        $settings = $this->getSettings($this->pregUnQuote($pattern, $matches));
+                        // An empty $settings means that the iniPart was not found,
+                        // which is usually because the match found doesn't match the version
+                        // numbers in our agent, so let's try the next match.
+                        if (empty($settings)) {
+                            $pattern = strtok("\t");
+                            continue;
+                        }
+
                         $formatter = Browscap::getFormatter();
-                        $formatter->setData($this->getSettings($pattern));
+                        $formatter->setData($settings);
+
                         break 2;
                     }
                     $pattern = strtok("\t");
@@ -340,9 +350,12 @@ extends AbstractParser
             // sort the data in the way we need it (see below).
             $data = array();
             foreach ($matches as $match) {
+
                 // get the first characters for a fast search
                 $tmp_start  = $this->getPatternStart($match);
                 $tmp_length = $this->getPatternLength($match);
+
+                $match = $this->pregQuote($match);
 
                 // special handling of default entry
                 if ($tmp_length === 0) {
@@ -355,7 +368,18 @@ extends AbstractParser
                 if (!isset($data[$tmp_start][$tmp_length])) {
                     $data[$tmp_start][$tmp_length] = array();
                 }
-                $data[$tmp_start][$tmp_length][] = $match;
+
+                $submatchescount = preg_match_all('@\d@', $match, $submatches);
+
+                if ($submatchescount) {
+                    $compressed_pattern = preg_replace('@\d@', '(\d)', $match);
+
+                    if (!in_array($compressed_pattern, $data[$tmp_start][$tmp_length])) {
+                        $data[$tmp_start][$tmp_length][] = $compressed_pattern;
+                    }
+                } else {
+                    $data[$tmp_start][$tmp_length][] = $match;
+                }
             }
 
             // sorting of the data is important to check the patterns later in the correct order, because
@@ -461,6 +485,10 @@ extends AbstractParser
         }
 
         $add_settings = $this->getIniPart($pattern);
+
+        if (empty($add_settings)) {
+            return [];
+        }
 
         // check if parent pattern set, only keep the first one
         $parent_pattern = null;
@@ -587,7 +615,7 @@ extends AbstractParser
 
         // use lowercase string to make the match case insensitive
         $string = strtolower($string);
-        
+
         if ($variants === true) {
             $pattern_starts = array();
             for ($i = strlen($string); $i >= 1; $i--) {
@@ -613,7 +641,7 @@ extends AbstractParser
      */
     protected static function getPatternLength($pattern)
     {
-        return strlen(str_replace('*', '', $pattern));
+        return strlen(str_replace(['*', '?'], '', $pattern));
     }
 
     /**
@@ -624,10 +652,44 @@ extends AbstractParser
      */
     protected static function pregQuote($pattern)
     {
-        $pattern = preg_quote($pattern, "/");
+        $pattern = preg_quote($pattern, '@');
 
-        // The \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
+        // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
         // @source https://github.com/browscap/browscap-php
         return str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern);
+    }
+
+    /**
+     * Removes quote characters from regex
+     *
+     * From https://github.com/browscap/browscap-php
+     *
+     * @param string $pattern
+     * @return string
+     */
+    protected function pregUnQuote($pattern, $matches)
+    {
+        // list of escaped characters: http://www.php.net/manual/en/function.preg-quote.php
+        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?', then change '.' to '?' and then '\?' to '.'.
+        $search  = array(
+            '\\' . '@', '\\.', '\\\\', '\\+', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}',
+            '\\=', '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '.*', '.', '\\?'
+        );
+        $replace = array(
+            '@', '\\?', '\\', '+', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|',
+            ':', '-', '*', '?', '.'
+        );
+
+        $result = str_replace($search, $replace, $pattern);
+
+        if (count($matches) > 1) {
+            array_shift($matches);
+            foreach ($matches as $one_match) {
+                $num_pos = strpos($result, '(\d)');
+                $result  = substr_replace($result, $one_match, $num_pos, 4);
+            }
+        }
+
+        return $result;
     }
 }
