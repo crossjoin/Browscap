@@ -118,6 +118,9 @@ extends AbstractParser
                 while ($pattern !== false) {
                     if (preg_match('@^' . $pattern . '$@i', $user_agent, $matches)) {
                         $settings = $this->getSettings($this->pregUnQuote($pattern, $matches));
+                        // An empty $settings means that the iniPart was not found,
+                        // which is usually because the match found doesn't match the version
+                        // numbers in our agent, so let's try the next match.
                         if (empty($settings)) {
                             $pattern = strtok("\t");
                             continue;
@@ -471,7 +474,7 @@ extends AbstractParser
      *
      * @param string $pattern
      * @param array $settings
-     * @return array|null
+     * @return array
      */
     protected function getSettings($pattern, $settings = array())
     {
