@@ -134,6 +134,7 @@ extends AbstractParser
                         if (count($settings) > 0) {
                             $formatter = Browscap::getFormatter();
                             $formatter->setData($this->getSettings($pattern));
+
                             break 2;
                         }
                     }
@@ -609,7 +610,7 @@ extends AbstractParser
      */
     protected function getIniPartCacheSubKey($string)
     {
-        return $string[0] . $string[1] . $string[2];
+        return $string[0] . $string[1];
     }
 
     /**
@@ -641,7 +642,7 @@ extends AbstractParser
 
         // use lowercase string to make the match case insensitive
         $string = strtolower($string);
-        
+
         if ($variants === true) {
             $pattern_starts = array();
             for ($i = strlen($string); $i >= 1; $i--) {
