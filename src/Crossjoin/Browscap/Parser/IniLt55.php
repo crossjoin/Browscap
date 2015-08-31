@@ -299,7 +299,7 @@ extends AbstractParser
         // check if pattern files need to be created
         $pattern_file_missing = false;
         foreach ($starts as $start) {
-            $sub_key = $this->getPatternCacheSubkey($start);
+            $sub_key = $this->getPatternCacheSubKey($start);
             if (!static::getCache()->exists("$prefix.patterns." . $sub_key)) {
                 $pattern_file_missing = true;
                 break;
@@ -315,7 +315,7 @@ extends AbstractParser
         // get patterns for the given start hashes
         $pattern_arr = array();
         foreach ($starts as $tmp_start) {
-            $tmp_sub_key = $this->getPatternCacheSubkey($tmp_start);
+            $tmp_sub_key = $this->getPatternCacheSubKey($tmp_start);
             /** @var Cache\File $cache */
             $cache = static::getCache();
             $file  = $cache->getFileName("$prefix.patterns." . $tmp_sub_key);
@@ -414,7 +414,7 @@ extends AbstractParser
                 foreach ($tmp_entries as $tmp_length => $tmp_patterns) {
                     for ($i = 0, $j = ceil(count($tmp_patterns)/$this->joinPatterns); $i < $j; $i++) {
                         $tmp_join_patterns = implode("\t", array_slice($tmp_patterns, ($i * $this->joinPatterns), $this->joinPatterns));
-                        $tmp_sub_key       = $this->getPatternCacheSubkey($tmp_start);
+                        $tmp_sub_key       = $this->getPatternCacheSubKey($tmp_start);
                         if (!isset($contents[$tmp_sub_key])) {
                             $contents[$tmp_sub_key] = '';
                         }
@@ -427,7 +427,7 @@ extends AbstractParser
             // unused patterns, so that the regeneration is not unnecessarily
             // triggered by the getPatterns() method.
             $prefix   = static::getCachePrefix();
-            $sub_keys = array_flip($this->getAllPatternCacheSubkeys());
+            $sub_keys = array_flip($this->getAllPatternCacheSubKeys());
             foreach ($contents as $sub_key => $content) {
                 $sub_key = (string)$sub_key;
                 static::getCache()->set("$prefix.patterns." . $sub_key, $content, true);
@@ -446,7 +446,7 @@ extends AbstractParser
      * @param string $string
      * @return string
      */
-    protected function getPatternCacheSubkey($string)
+    protected function getPatternCacheSubKey($string)
     {
         return $string[0] . $string[1];
     }
@@ -456,7 +456,7 @@ extends AbstractParser
      *
      * @return array
      */
-    protected function getAllPatternCacheSubkeys()
+    protected function getAllPatternCacheSubKeys()
     {
         $sub_keys = array();
         $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
@@ -599,7 +599,7 @@ extends AbstractParser
         // write cache files. important: also write empty cache files for
         // unused iniparts, so that the regeneration is not unnecessarily
         // triggered by the getIniParts() method.
-        $sub_keys = array_flip($this->getAllIniPartCacheSubkeys());
+        $sub_keys = array_flip($this->getAllIniPartCacheSubKeys());
         foreach ($contents as $chars => $content) {
             $chars = (string)$chars;
             static::getCache()->set("$prefix.iniparts." . $chars, $content);
@@ -627,7 +627,7 @@ extends AbstractParser
      *
      * @return array
      */
-    protected function getAllIniPartCacheSubkeys()
+    protected function getAllIniPartCacheSubKeys()
     {
         $sub_keys = array();
         $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
