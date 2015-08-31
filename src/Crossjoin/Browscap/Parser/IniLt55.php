@@ -133,7 +133,7 @@ extends AbstractParser
                         $settings = $this->getSettings($pattern);
                         if (count($settings) > 0) {
                             $formatter = Browscap::getFormatter();
-                            $formatter->setData($this->getSettings($pattern));
+                            $formatter->setData($settings);
                             break 2;
                         }
                     }
