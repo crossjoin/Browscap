@@ -595,9 +595,19 @@ extends AbstractParser
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
             ) . "\n";
         }
+
+        // write cache files. important: also write empty cache files for
+        // unused iniparts, so that the regeneration is not unnecessarily
+        // triggered by the getIniParts() method.
+        $sub_keys = array_flip($this->getAllIniPartCacheSubkeys());
         foreach ($contents as $chars => $content) {
             $chars = (string)$chars;
             static::getCache()->set("$prefix.iniparts." . $chars, $content);
+            unset($sub_keys[$chars]);
+        }
+        foreach (array_keys($sub_keys) as $sub_key) {
+            $sub_key = (string)$sub_key;
+            static::getCache()->set("$prefix.iniparts." . $sub_key, '');
         }
     }
 
@@ -610,6 +620,27 @@ extends AbstractParser
     protected function getIniPartCacheSubKey($string)
     {
         return $string[0] . $string[1] . $string[2];
+    }
+
+    /**
+     * Gets all sub keys for the inipart cache files
+     *
+     * @return array
+     */
+    protected function getAllIniPartCacheSubkeys()
+    {
+        $sub_keys = array();
+        $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+
+        foreach ($chars as $char_one) {
+            foreach ($chars as $char_two) {
+                foreach ($chars as $char_three) {
+                    $sub_keys[] = $char_one . $char_two . $char_three;
+                }
+            }
+        }
+
+        return $sub_keys;
     }
 
     /**
@@ -641,7 +672,7 @@ extends AbstractParser
 
         // use lowercase string to make the match case insensitive
         $string = strtolower($string);
-        
+
         if ($variants === true) {
             $pattern_starts = array();
             for ($i = strlen($string); $i >= 1; $i--) {
