@@ -38,7 +38,7 @@ namespace Crossjoin\Browscap;
  * @package Crossjoin\Browscap
  * @author Christoph Ziegenberg <christoph@ziegenberg.com>
  * @copyright Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @license http://www.opensource.org/licenses/MIT MIT License
  * @link https://github.com/crossjoin/browscap
  */
@@ -48,7 +48,7 @@ class Browscap
      * Current version of the package.
      * Has to be updated to automatically renew cache data.
      */
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     /**
      * Data set types
