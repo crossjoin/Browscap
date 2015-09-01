@@ -22,7 +22,7 @@ You can also switch the type of data set to use - small, medium (default) or lar
 - The default data set (containing all known browsers and the default properties)
 - The small data set (with the most important browser only and the default properties)
 - The large data set (with all known browsers and additional properties)
-- The parsing time is nearly the same for all versions, it only affects the time and memory consumption for the cache data preparation.
+- The parsing time is fast for all versions, it mainly affects the time and memory consumption for the cache data preparation.
 
 Requirements
 --------------
