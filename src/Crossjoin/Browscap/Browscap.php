@@ -58,6 +58,13 @@ class Browscap
     const DATASET_TYPE_LARGE   = 3;
 
     /**
+     * Use automatic updates (if no explicit updater set)
+     *
+     * @var \Crossjoin\Browscap\Updater\AbstractUpdater
+     */
+    protected $autoUpdate;
+
+    /**
      * Updater to use
      *
      * @var \Crossjoin\Browscap\Updater\AbstractUpdater
@@ -92,6 +99,16 @@ class Browscap
     protected $updateProbability = 1.0;
 
     /**
+     * Constructor
+     *
+     * @param bool $autoUpdate
+     */
+    public function __construct($autoUpdate = true)
+    {
+        $this->autoUpdate = (bool)(int)$autoUpdate;
+    }
+
+    /**
      * Checks the given/detected user agent and returns a
      * formatter instance with the detected settings
      *
@@ -110,7 +127,7 @@ class Browscap
         }
 
         // check for update first
-        if (mt_rand(1, floor((100 / $this->updateProbability))) === 1) {
+        if ($this->autoUpdate === true && mt_rand(1, floor((100 / $this->updateProbability))) === 1) {
             static::getParser()->update();
         }
 
