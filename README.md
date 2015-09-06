@@ -1,9 +1,6 @@
-Browscap Parsing Class
-==============
+# Browscap Parsing Class
 
-Introduction
---------------
-
+## Introduction
 Crossjoin\Browscap allows to check for browser settings based on the user agent string, using the data from Browscap 
 (the [Browser Capabilities Project](browscap.org)). 
 
@@ -24,18 +21,15 @@ You can also switch the type of data set to use - small, medium (default) or lar
 - The large data set (with all known browsers and additional properties)
 - The parsing time is fast for all versions, it mainly affects the time and memory consumption for the cache data preparation.
 
-Requirements
---------------
+## Requirements
 - PHP 5.3+ (it has been successfully tested with PHP 5.3.28 - PHP 7.0.0RC1, perhaps also older versions still work)
 
-Suggestions
---------------
+### Suggestions
 - PHP 5.5+ recommended (to be able to use generators, which reduces memory consumption a lot)
 - PHP 7.0+ for best performance (50%-60% faster than PHP 5.5+)
 - For automatic updates: cURL extension or `allow_url_fopen` enabled in php.ini
 
-Package installation
---------------
+## Package installation
 Crossjoin\Browscap is provided as a Composer package which can be installed by adding the package to your composer.json file:
 ```
 {
@@ -47,9 +41,12 @@ Crossjoin\Browscap is provided as a Composer package which can be installed by a
 
 You can also install it manually and use a [PSR-0-compliant](http://www.php-fig.org/psr/psr-0/) autoloader (e.g. from the [Zend Framwork](http://framework.zend.com/manual/2.3/en/modules/zend.loader.standard-autoloader.html) or a [standalone class](https://gist.github.com/lisachenko/1335891)).
 
+## Usage
 
-Simple example
---------------
+### Simple example
+
+You can directly use the Browscap parser. The Browscap data are automatically downloaded, updated and prepared when required.
+
 ```
 <?php
 // include Composer autoloader
@@ -59,6 +56,10 @@ require_once '../vendor/autoload.php';
 $browscap = new \Crossjoin\Browscap\Browscap();
 $settings = $browscap->getBrowser()->getData();
 ```
+
+### Recommended usage in production
+
+
 
 
 Advanced example

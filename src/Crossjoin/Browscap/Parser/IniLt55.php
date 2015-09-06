@@ -161,7 +161,12 @@ extends AbstractParser
     }
 
     /**
-     * Checks if the source needs to be updated and processes the update
+     * Checks if the source needs to be updated and processes the update. This update includes the preparation
+     * of the browscap data.
+     *
+     * The optional $forceUpdate argument always updates the data, no matter if required or not. This can produce
+     * unnecessary load on the browscap servers and result in rate limit errors. It's not recommended to use this
+     * option in production!
      *
      * @param boolean $forceUpdate
      * @throws \RuntimeException
@@ -253,6 +258,12 @@ extends AbstractParser
                         // create cache file for the new version
                         static::getCache()->set("$prefix.ini", $source_content, true);
                         unset($source_content);
+
+                        // Prepare the new data before the version gets updated. Otherwise request after the
+                        // version update could also trigger the preparation (because of the new version, but no
+                        // prepared data).
+                        $this->createPatterns();
+                        $this->createIniParts();
 
                         // update cached version
                         static::getCache()->set("$prefix.version", static::$version, false);
