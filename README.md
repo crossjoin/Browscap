@@ -198,7 +198,7 @@ use your own formatter to adjust the result:
 ```php
 // Set an own formatter that extends \Crossjoin\Browscap\Formatter\AbstractFormatter
 //$formatter = new \My\Browscap\Formatter\Extended();
-//\Crossjoin\Browscap\Browscap::setFormatter($formatter);
+\Crossjoin\Browscap\Browscap::setFormatter($formatter);
 ```
 
 #### Change the parser
