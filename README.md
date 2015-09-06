@@ -100,6 +100,7 @@ $browscap = new \Crossjoin\Browscap\Browscap(false);
 // call the cron job.
 $browscap->getUpdater()->setInterval(0);
   
+// Run the browscap data update and preparation
 $browscap->update();
 ```
 
