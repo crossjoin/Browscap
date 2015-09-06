@@ -206,8 +206,8 @@ use your own formatter to adjust the result:
 You want to implement your own parser? Why not!
 
 ```php
-// Set an own parser implementation that extends \Crossjoin\Browscap\Parser\AbstractParser 
-// (also for other formats than INI)
+// Set an own parser implementation that extends 
+// \Crossjoin\Browscap\Parser\AbstractParser (also for other formats than INI)
 $parser = new \My\Browscap\Parser\Ini();
 \Crossjoin\Browscap\Browscap::setParser($parser);
 ```
