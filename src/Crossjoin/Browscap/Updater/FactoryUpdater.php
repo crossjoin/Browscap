@@ -43,7 +43,7 @@ class FactoryUpdater
     /**
      * Get a available updater instance, or returns NULL is none available.
      *
-     * @return \Crossjoin\Browscap\Updater\AbstractUpdater|null
+     * @return \Crossjoin\Browscap\Updater\AbstractUpdater
      */
     public static function getInstance()
     {
@@ -51,7 +51,12 @@ class FactoryUpdater
             return new Curl();
         } elseif ((bool)(int)ini_get('allow_url_fopen') !== false) {
             return new FileGetContents();
+        } elseif (($browscapFile = (string)ini_get('browscap')) !== "") {
+            $updater = new Local();
+            $updater->setOption('LocalFile', $browscapFile);
+            return $updater;
         }
-        return null;
+        
+        return new None();
     }
 }
