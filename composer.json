@@ -1,7 +1,7 @@
 {
     "name": "crossjoin/browscap",
     "type": "library",
-    "description": "The standalone PHP Browscap parser Crossjoin\\Browscap detects browser properties as well as device information based on the user agent string of the requesting browsers and search engines, using the data from the Browser Capabilities Project.\\nIt's several hundred times faster than the build-in PHP function get_browser(), and faster than other Browscap PHP libraries, with much lower memory consumption. Optionally Crossjoin\\Browscap automatically updates the Browscap data, so you're always up-to-date. It supports PHP 5.3 to PHP 7.0 (PHP 5.5+ recommended).",
+    "description": "The standalone PHP Browscap parser Crossjoin\\Browscap detects browser properties as well as device information based on the user agent string of the requesting browsers and search engines, using the data from the Browser Capabilities Project. It's several hundred times faster than the build-in PHP function get_browser(), and faster than other Browscap PHP libraries, with much lower memory consumption. Optionally Crossjoin\\Browscap automatically updates the Browscap data, so you're always up-to-date. It supports PHP 5.3 to PHP 7.0 (PHP 5.5+ recommended).",
     "keywords": ["get_browser", "browser", "browscap", "client", "detection", "capabilities", "user agent", "php", "device", "properties"],
     "homepage": "https://github.com/crossjoin/Browscap",
     "license": "MIT",
