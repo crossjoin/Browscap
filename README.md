@@ -95,7 +95,7 @@ require_once '../vendor/autoload.php';
 $browscap = new \Crossjoin\Browscap\Browscap(false);
   
 // By default the version is checked every 5 days. When you use a cron job, you
-// probably want to controll this interval in your cron job configuration. To do
+// probably want to control this interval in your cron job configuration. To do
 // so, set the interval to zero here to check for a new version every time you
 // call the cron job.
 $browscap->getUpdater()->setInterval(0);
@@ -197,7 +197,7 @@ use your own formatter to adjust the result:
 
 ```php
 // Set an own formatter that extends \Crossjoin\Browscap\Formatter\AbstractFormatter
-//$formatter = new \My\Browscap\Formatter\Extended();
+$formatter = new \My\Browscap\Formatter\Extended();
 \Crossjoin\Browscap\Browscap::setFormatter($formatter);
 ```
 
