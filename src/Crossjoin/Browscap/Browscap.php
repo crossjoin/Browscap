@@ -103,8 +103,16 @@ class Browscap
         }
 
         // check for update first
-        if ($this->autoUpdate === true && mt_rand(1, floor((100 / $this->updateProbability))) === 1) {
-            static::getParser()->update();
+        if ($this->autoUpdate === true) {
+            $randomMax = floor(100 / $this->updateProbability);
+            if (function_exists('random_int')) {
+                $randomInt = random_int(1, $randomMax);
+            } else {
+                $randomInt = mt_rand(1, $randomMax);
+            }
+            if ($randomInt === 1) {
+                static::getParser()->update();
+            }
         }
 
         // try to get browser data
