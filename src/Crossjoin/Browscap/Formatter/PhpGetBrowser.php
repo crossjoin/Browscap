@@ -16,8 +16,13 @@ namespace Crossjoin\Browscap\Formatter;
  * @author Christoph Ziegenberg <christoph@ziegenberg.com>
  * @link https://github.com/crossjoin/browscap
  */
-class PhpGetBrowser extends AbstractFormatter
+class PhpGetBrowser implements FormatterInterface
 {
+    /**
+     * @var \stdClass
+     */
+    protected $settings;
+
     /**
      * PhpGetBrowser constructor.
      */

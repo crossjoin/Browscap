@@ -11,6 +11,8 @@ namespace Crossjoin\Browscap\Formatter;
  * @package Crossjoin\Browscap
  * @author Christoph Ziegenberg <christoph@ziegenberg.com>
  * @link https://github.com/crossjoin/browscap
+ *
+ * @deprecated Implement FormatterInterface instead.
  */
 abstract class AbstractFormatter implements FormatterInterface
 {

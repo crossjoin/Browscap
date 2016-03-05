@@ -16,15 +16,12 @@ namespace Crossjoin\Browscap\Formatter;
  * @author Christoph Ziegenberg <christoph@ziegenberg.com>
  * @link https://github.com/crossjoin/browscap
  */
-class PhpGetBrowserArray extends AbstractFormatter
+class PhpGetBrowserArray implements FormatterInterface
 {
     /**
-     * PhpGetBrowserArray constructor.
+     * @var array
      */
-    public function __construct()
-    {
-        $this->settings = array();
-    }
+    protected $settings = array();
 
     /**
      * Sets the data (done by the parser)
