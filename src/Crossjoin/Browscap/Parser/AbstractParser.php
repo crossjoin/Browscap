@@ -35,8 +35,7 @@ abstract class AbstractParser
     /**
      * The type to use when downloading the browscap source data
      * (default version: all browsers, default properties),
-     * has to be overwritten by the extending class,
-     * e.g. 'PHP_BrowscapINI'.
+     * has to be set by the extending class, e.g. 'PHP_BrowscapINI'.
      *
      * @see http://browscap.org/
      * @var string
@@ -46,8 +45,7 @@ abstract class AbstractParser
     /**
      * The type to use when downloading the browscap source data
      * (small version: popular browsers, default properties),
-     * has to be overwritten by the extending class,
-     * e.g. 'Lite_PHP_BrowscapINI'.
+     * has to be set by the extending class, e.g. 'Lite_PHP_BrowscapINI'.
      *
      * @see http://browscap.org/
      * @var string
@@ -57,8 +55,7 @@ abstract class AbstractParser
     /**
      * The type to use when downloading the browscap source data
      * (large version: all browsers, extended properties),
-     * has to be overwritten by the extending class,
-     * e.g. 'Full_PHP_BrowscapINI'.
+     * has to be set by the extending class, e.g. 'Full_PHP_BrowscapINI'.
      *
      * @see http://browscap.org/
      * @var string
@@ -72,7 +69,7 @@ abstract class AbstractParser
      */
     public function getSourceType()
     {
-        switch (Browscap::getDatasetType()) {
+        switch (Browscap::getDataSetType()) {
             case Browscap::DATASET_TYPE_SMALL:
                 return $this->sourceTypeSmall;
             case Browscap::DATASET_TYPE_LARGE:
@@ -93,10 +90,10 @@ abstract class AbstractParser
      * Gets the browser data formatter for the given user agent
      * (or null if no data available, no even the default browser)
      *
-     * @param string $user_agent
+     * @param string $userAgent
      * @return FormatterInterface|null
      */
-    abstract public function getBrowser($user_agent);
+    abstract public function getBrowser($userAgent);
 
     /**
      * Gets a cache instance
@@ -137,13 +134,13 @@ abstract class AbstractParser
     }
 
     /**
-     * Gets the cache prefix, dependent of the used browscap dataset type.
+     * Gets the cache prefix, dependent of the used browscap data set type.
      *
      * @return string
      */
     protected static function getCachePrefix()
     {
-        switch (Browscap::getDatasetType()) {
+        switch (Browscap::getDataSetType()) {
             case Browscap::DATASET_TYPE_SMALL:
                 return 'smallbrowscap';
             case Browscap::DATASET_TYPE_LARGE:

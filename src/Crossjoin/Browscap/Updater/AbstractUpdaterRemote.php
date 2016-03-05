@@ -9,38 +9,11 @@ use Crossjoin\Browscap\Browscap;
  * With class extends the abstract updater with methods that are required
  * or remote sources.
  *
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
  * @package Crossjoin\Browscap
  * @author Christoph Ziegenberg <christoph@ziegenberg.com>
- * @copyright Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- * @version 1.0.4
- * @license http://www.opensource.org/licenses/MIT MIT License
  * @link https://github.com/crossjoin/browscap
  */
-abstract class AbstractUpdaterRemote
-extends AbstractUpdater
+abstract class AbstractUpdaterRemote extends AbstractUpdater
 {
     const PROXY_PROTOCOL_HTTP  = 'http';
     const PROXY_PROTOCOL_HTTPS = 'https';
@@ -53,7 +26,7 @@ extends AbstractUpdater
      *
      * @var string
      */
-    protected $browscapSourceUrl        = 'http://browscap.org/stream?q=%t';
+    protected $browscapSourceUrl = 'http://browscap.org/stream?q=%t';
 
     /**
      * The URL to detect the current Browscap version
@@ -61,7 +34,7 @@ extends AbstractUpdater
      *
      * @var string
      */
-    protected $browscapVersionUrl       = 'http://browscap.org/version';
+    protected $browscapVersionUrl = 'http://browscap.org/version';
 
     /**
      * The URL to detect the current Browscap version number
@@ -78,6 +51,12 @@ extends AbstractUpdater
      */
     protected $userAgent = 'Browser Capabilities Project - Crossjoin Browscap/%v %m';
 
+    /**
+     * AbstractUpdaterRemote constructor.
+     *
+     * @param array|null $options
+     * @throws \InvalidArgumentException
+     */
     public function __construct($options = null)
     {
         parent::__construct($options);
@@ -155,7 +134,7 @@ extends AbstractUpdater
     }
 
     /**
-     * Format the useragent string to be used in the remote requests made by the
+     * Format the user agent string to be used in the remote requests made by the
      * class during the update process
      *
      * @return string
@@ -172,37 +151,52 @@ extends AbstractUpdater
     /**
      * Gets the exception to throw if the given HTTP status code is an error code (4xx or 5xx)
      *
-     * @param int $http_code
+     * @param int $httpCode
+     * @param bool $throwException
      * @return \RuntimeException|null
+     * @throws \RuntimeException
      */
-    protected function getHttpErrorException($http_code)
+    protected function getHttpErrorException($httpCode, $throwException = false)
     {
-        $http_code = (int)$http_code;
+        $httpCode = (int)$httpCode;
 
-        if ($http_code >= 400) {
-            switch ($http_code) {
+        $result = null;
+        if ($httpCode >= 400) {
+            switch ($httpCode) {
                 case 401:
-                    return new \RuntimeException("HTTP client error 401: Unauthorized");
+                    $result = new \RuntimeException('HTTP client error 401: Unauthorized');
+                    break;
                 case 403:
-                    return new \RuntimeException("HTTP client error 403: Forbidden");
+                    $result = new \RuntimeException('HTTP client error 403: Forbidden');
+                    break;
                 case 404:
                     // wrong browscap source url
-                    return new \RuntimeException("HTTP client error 404: Not Found");
+                    $result = new \RuntimeException('HTTP client error 404: Not Found');
+                    break;
                 case 429:
                     // rate limit has been exceeded
-                    return new \RuntimeException("HTTP client error 429: Too many request");
+                    $result = new \RuntimeException('HTTP client error 429: Too many request');
+                    break;
                 case 500:
-                    return new \RuntimeException("HTTP server error 500: Internal Server Error");
+                    $result = new \RuntimeException('HTTP server error 500: Internal Server Error');
+                    break;
                 default:
-                    if ($http_code >= 500) {
-                        return new \RuntimeException("HTTP server error $http_code");
+                    if ($httpCode >= 500) {
+                        $result = new \RuntimeException("HTTP server error $httpCode");
                     } else {
-                        return new \RuntimeException("HTTP client error $http_code");
+                        $result = new \RuntimeException("HTTP client error $httpCode");
                     }
             }
+        } else {
+            $throwException = false;
         }
 
-        return null;
+        if ($throwException === true) {
+            /** @var \RuntimeException $result */
+            throw $result;
+        } else {
+            return $result;
+        }
     }
 
     /**

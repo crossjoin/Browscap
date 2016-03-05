@@ -88,17 +88,16 @@ class Browscap
      * Checks the given/detected user agent and returns a
      * formatter instance with the detected settings
      *
-     * @param string $user_agent
+     * @param string $userAgent
      * @return FormatterInterface
      */
-    public function getBrowser($user_agent = null)
+    public function getBrowser($userAgent = null)
     {
         // automatically detect the user agent
-        if ($user_agent === null) {
-            if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $user_agent = $_SERVER['HTTP_USER_AGENT'];
-            } else {
-                $user_agent = '';
+        if ($userAgent === null) {
+            $userAgent = '';
+            if (array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
+                $userAgent = $_SERVER['HTTP_USER_AGENT'];
             }
         }
 
@@ -108,6 +107,7 @@ class Browscap
             if (function_exists('random_int')) {
                 $randomInt = random_int(1, $randomMax);
             } else {
+                /** @noinspection RandomApiMigrationInspection */
                 $randomInt = mt_rand(1, $randomMax);
             }
             if ($randomInt === 1) {
@@ -116,7 +116,7 @@ class Browscap
         }
 
         // try to get browser data
-        $return = static::getParser()->getBrowser($user_agent);
+        $return = static::getParser()->getBrowser($userAgent);
 
         // if not found, there has to be a problem with the source data,
         // because normally default browser data are returned,
@@ -124,7 +124,7 @@ class Browscap
         if ($return === null && $this->updateProbability < 100) {
             $updateProbability = $this->updateProbability;
             $this->updateProbability = 100;
-            $return = $this->getBrowser($user_agent);
+            $return = $this->getBrowser($userAgent);
             $this->updateProbability = $updateProbability;
         }
 
@@ -199,6 +199,8 @@ class Browscap
      * Gets the updater instance (and initializes the default one, if not set)
      *
      * @return \Crossjoin\Browscap\Updater\AbstractUpdater
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public static function getUpdater()
     {
@@ -214,15 +216,19 @@ class Browscap
     /**
      * Sets the data set type to use for the source.
      *
-     * @param integer $datasetType
+     * @param integer $dataSetType
      * @throws \InvalidArgumentException
      */
-    public static function setDatasetType ($datasetType)
+    public static function setDataSetType($dataSetType)
     {
-        if (in_array($datasetType, array(self::DATASET_TYPE_DEFAULT, self::DATASET_TYPE_SMALL, self::DATASET_TYPE_LARGE), true)) {
-            static::$datasetType = $datasetType;
+        if (in_array(
+            $dataSetType,
+            array(self::DATASET_TYPE_DEFAULT, self::DATASET_TYPE_SMALL, self::DATASET_TYPE_LARGE),
+            true
+        )) {
+            static::$datasetType = $dataSetType;
         } else {
-            throw new \InvalidArgumentException("Invalid value for argument 'datasetType'.");
+            throw new \InvalidArgumentException("Invalid value for argument 'dataSetType'.");
         }
     }
 
@@ -231,7 +237,7 @@ class Browscap
      *
      * @return integer
      */
-    public static function getDatasetType ()
+    public static function getDataSetType()
     {
         return static::$datasetType;
     }

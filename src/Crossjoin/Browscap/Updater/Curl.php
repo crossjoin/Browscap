@@ -6,53 +6,26 @@ namespace Crossjoin\Browscap\Updater;
  *
  * This class loads the source data using the curl extension.
  *
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
  * @package Crossjoin\Browscap
  * @author Christoph Ziegenberg <christoph@ziegenberg.com>
- * @copyright Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- * @version 1.0.4
- * @license http://www.opensource.org/licenses/MIT MIT License
  * @link https://github.com/crossjoin/browscap
  */
-class Curl
-extends AbstractUpdaterRemote
+class Curl extends AbstractUpdaterRemote
 {
     /**
-     * Name of the update method, used in the user agent for the request,
-     * for browscap download statistics. Has to be overwritten by the
-     * extending class.
+     * Curl constructor.
      *
-     * @var string
+     * @param null $options
+     * @throws \InvalidArgumentException
      */
-    protected $updateMethod = 'cURL';
-
     public function __construct($options = null)
     {
         parent::__construct($options);
 
-        // add additional options
+        // Set update method
+        $this->updateMethod = 'cURL';
+
+        // Add additional options
         $this->options['ConnectTimeout'] = 5;
         $this->options['ScriptTimeLimit'] = 300;
     }
@@ -67,70 +40,69 @@ extends AbstractUpdaterRemote
     protected function getRemoteData($url)
     {
         // set time limit, required to get the data
-        $max_execution_time = ini_get('max_execution_time');
+        $maxExecutionTime = ini_get('max_execution_time');
         set_time_limit($this->getOption('ScriptTimeLimit'));
 
-        $ch = curl_init($url);
+        $curl = curl_init($url);
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->getOption('ConnectTimeout'));
-        curl_setopt($ch, CURLOPT_USERAGENT, $this->getUserAgent());
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->getOption('ConnectTimeout'));
+        curl_setopt($curl, CURLOPT_USERAGENT, $this->getUserAgent());
 
         // check and set proxy settings
-        $proxy_host = $this->getOption('ProxyHost');
-        if ($proxy_host !== null) {
+        $proxyHost = $this->getOption('ProxyHost');
+        if ($proxyHost !== null) {
             // check for supported protocol
-            $proxy_protocol = $this->getOption('ProxyProtocol');
-            if ($proxy_protocol !== null) {
-                if (!in_array($proxy_protocol, array(self::PROXY_PROTOCOL_HTTP, self::PROXY_PROTOCOL_HTTPS))) {
-                    throw new \RuntimeException("Invalid/unsupported value '$proxy_protocol' for option 'ProxyProtocol'.");
+            $proxyProtocol = $this->getOption('ProxyProtocol');
+            if ($proxyProtocol !== null) {
+                if (!in_array($proxyProtocol, array(self::PROXY_PROTOCOL_HTTP, self::PROXY_PROTOCOL_HTTPS), true)) {
+                    throw new \RuntimeException(
+                        "Invalid/unsupported value '$proxyProtocol' for option 'ProxyProtocol'."
+                    );
                 }
             } else {
-                $proxy_protocol = self::PROXY_PROTOCOL_HTTP;
+                $proxyProtocol = self::PROXY_PROTOCOL_HTTP;
             }
 
-            $proxy_port = $this->getOption('ProxyPort');
+            $proxyPort = $this->getOption('ProxyPort');
 
             // check auth settings
-            $proxy_auth = $this->getOption('ProxyAuth');
-            if ($proxy_auth !== null) {
-                if (!in_array($proxy_auth, array(self::PROXY_AUTH_BASIC, self::PROXY_AUTH_NTLM))) {
-                    throw new \RuntimeException("Invalid/unsupported value '$proxy_auth' for option 'ProxyAuth'.");
+            $proxyAuth = $this->getOption('ProxyAuth');
+            if ($proxyAuth !== null) {
+                if (!in_array($proxyAuth, array(self::PROXY_AUTH_BASIC, self::PROXY_AUTH_NTLM), true)) {
+                    throw new \RuntimeException("Invalid/unsupported value '$proxyAuth' for option 'ProxyAuth'.");
                 }
             } else {
-                $proxy_auth = self::PROXY_AUTH_BASIC;
+                $proxyAuth = self::PROXY_AUTH_BASIC;
             }
-            $proxy_user     = $this->getOption('ProxyUser');
-            $proxy_password = $this->getOption('ProxyPassword');
+            $proxyUser     = $this->getOption('ProxyUser');
+            $proxyPassword = $this->getOption('ProxyPassword');
 
             // set basic proxy options
-            curl_setopt($ch, CURLOPT_PROXY, $proxy_protocol . "://" . $proxy_host);
-            if ($proxy_port !== null) {
-                curl_setopt($ch, CURLOPT_PROXYPORT, $proxy_port);
+            curl_setopt($curl, CURLOPT_PROXY, $proxyProtocol . '://' . $proxyHost);
+            if ($proxyPort !== null) {
+                curl_setopt($curl, CURLOPT_PROXYPORT, $proxyPort);
             }
 
             // set proxy auth options
-            if ($proxy_user !== null) {
-                if ($proxy_auth === self::PROXY_AUTH_NTLM) {
-                    curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_NTLM);
+            if ($proxyUser !== null) {
+                if ($proxyAuth === self::PROXY_AUTH_NTLM) {
+                    curl_setopt($curl, CURLOPT_PROXYAUTH, CURLAUTH_NTLM);
                 }
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy_user . ":" . $proxy_password);
+                curl_setopt($curl, CURLOPT_PROXYUSERPWD, $proxyUser . ':' . $proxyPassword);
             }
         }
 
-        $response  = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        curl_close($ch);
+        curl_close($curl);
 
         // reset time limit to the previous value
-        set_time_limit($max_execution_time);
+        set_time_limit($maxExecutionTime);
 
         // check for HTTP error
-        $http_exception = $this->getHttpErrorException($http_code);
-        if ($http_exception !== null) {
-            throw $http_exception;
-        }
+        $this->getHttpErrorException($httpCode, true);
 
         return $response;
     }

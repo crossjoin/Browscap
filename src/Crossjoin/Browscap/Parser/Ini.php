@@ -20,64 +20,50 @@ class Ini extends IniLt55
      * - We compare the length of the pattern with the length of the user agent
      *   (the pattern cannot be longer than the user agent!)
      *
-     * @param string $user_agent
+     * @param string $userAgent
      * @return \Generator
      */
-    protected function getPatterns($user_agent)
+    protected function getPatterns($userAgent)
     {
-        $starts = static::getPatternStart($user_agent, true);
-        $length = strlen($user_agent);
+        $starts = static::getPatternStart($userAgent, true);
+        $length = strlen($userAgent);
         $prefix = static::getCachePrefix();
 
         // check if pattern files need to be created
-        $pattern_file_missing = false;
-        foreach ($starts as $start) {
-            $sub_key = $this->getPatternCacheSubKey($start);
-            if (!static::getCache()->exists("$prefix.patterns." . $sub_key)) {
-                $pattern_file_missing = true;
-                break;
-            }
-        }
-        if ($pattern_file_missing === true) {
-            $this->createPatterns();
-        }
+        $this->checkPatternFiles($starts);
 
         // add special key to fall back to the default browser
         $starts[] = str_repeat('z', 32);
 
         // get patterns for the given start hashes
-        foreach ($starts as $tmp_start) {
-            $tmp_sub_key = $this->getPatternCacheSubKey($tmp_start);
+        foreach ($starts as $tmpStart) {
+            $tmpSubKey = $this->getPatternCacheSubKey($tmpStart);
             /** @var \Crossjoin\Browscap\Cache\File $cache */
             $cache = static::getCache();
-            $file  = $cache->getFileName("$prefix.patterns." . $tmp_sub_key);
-            if (file_exists($file)) {
-                $handle = fopen($file, 'r');
-                if ($handle) {
-                    try {
-                        $found = false;
-                        while (($buffer = fgets($handle)) !== false) {
-                            $tmp_buffer = substr($buffer, 0, 32);
-                            if ($tmp_buffer === $tmp_start) {
-                                // get length of the pattern
-                                $len = (int)strstr(substr($buffer, 33, 4), ' ', true);
+            $file  = $cache->getFileName("$prefix.patterns." . $tmpSubKey);
+            if (!is_readable($file)) {
+                continue;
+            }
 
-                                // the user agent must be longer than the pattern without place holders
-                                if ($len <= $length) {
-                                    list(,,$patterns) = explode(' ', $buffer, 3);
-                                    yield trim($patterns);
-                                }
-                                $found = true;
-                            } elseif ($found === true) {
-                                break;
-                            }
+            $handle = fopen($file, 'r');
+            if ($handle) {
+                $found = false;
+                while (($buffer = fgets($handle)) !== false) {
+                    if (strpos($buffer, $tmpStart) === 0) {
+                        // get length of the pattern
+                        $len = (int)strstr(substr($buffer, 33, 4), ' ', true);
+
+                        // the user agent must be longer than the pattern without place holders
+                        if ($len <= $length) {
+                            list(,,$patterns) = explode(' ', $buffer, 3);
+                            yield trim($patterns);
                         }
-                    } finally {
-                        // always close the opened file, also when the Generator is
-                        // used in a loop that is ended with a break
-                        fclose($handle);
+                        $found = true;
+                    } elseif ($found === true) {
+                        break;
                     }
                 }
+                fclose($handle);
             }
         }
         yield false;

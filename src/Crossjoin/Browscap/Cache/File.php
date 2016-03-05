@@ -18,7 +18,7 @@ class File implements CacheInterface
     /**
      * @var string
      */
-    protected static $cache_dir;
+    protected static $cacheDir;
 
     /**
      * Get cached data by a given key
@@ -101,7 +101,7 @@ class File implements CacheInterface
      */
     public static function setCacheDirectory($cacheDir)
     {
-        static::$cache_dir = rtrim($cacheDir, DIRECTORY_SEPARATOR);
+        static::$cacheDir = rtrim($cacheDir, DIRECTORY_SEPARATOR);
     }
 
     /**
@@ -115,7 +115,7 @@ class File implements CacheInterface
     {
         // get sub directory name, depending on the data set type
         // (one sub directory for each data set type and version)
-        switch (Browscap::getDatasetType()) {
+        switch (Browscap::getDataSetType()) {
             case Browscap::DATASET_TYPE_SMALL:
                 $subDirName = 'smallbrowscap';
                 break;
@@ -126,10 +126,10 @@ class File implements CacheInterface
                 $subDirName = 'browscap';
         }
 
-        if (static::$cache_dir === null) {
+        if (static::$cacheDir === null) {
             static::setCacheDirectory(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'browscap');
         }
-        $path = static::$cache_dir;
+        $path = static::$cacheDir;
 
         if ($withVersion === true) {
             $path .= DIRECTORY_SEPARATOR . $subDirName;
@@ -138,6 +138,7 @@ class File implements CacheInterface
         }
 
         if ($createDir === true && !file_exists($path)) {
+            /** @noinspection MkdirRaceConditionInspection */
             mkdir($path, 0777, true);
         }
 
