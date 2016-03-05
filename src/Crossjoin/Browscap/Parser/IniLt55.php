@@ -164,6 +164,9 @@ class IniLt55 extends AbstractParser
             }
 
             if ($update) {
+                // Disable memory limit for update
+                ini_set('memory_limit', -1);
+
                 // check version/timestamp, to se if we need to do an update
                 $doUpdate = false;
                 if ($localTimeStamp === 0) {
