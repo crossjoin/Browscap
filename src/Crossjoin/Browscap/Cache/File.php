@@ -82,13 +82,13 @@ class File implements CacheInterface
      * Gets the cache file name for a given key
      *
      * @param string $key
-     * @param boolean $with_version
-     * @param bool $create_dir
+     * @param boolean $withVersion
+     * @param bool $createDir
      * @return string
      */
-    public function getFileName($key, $with_version = true, $create_dir = false)
+    public function getFileName($key, $withVersion = true, $createDir = false)
     {
-        $file  = static::getCacheDirectory($with_version, $create_dir);
+        $file  = static::getCacheDirectory($withVersion, $createDir);
         $file .= DIRECTORY_SEPARATOR . $key;
 
         return $file;
@@ -97,21 +97,21 @@ class File implements CacheInterface
     /**
      * Sets the (main) cache directory
      *
-     * @param string $cache_dir
+     * @param string $cacheDir
      */
-    public static function setCacheDirectory($cache_dir)
+    public static function setCacheDirectory($cacheDir)
     {
-        static::$cache_dir = rtrim($cache_dir, DIRECTORY_SEPARATOR);
+        static::$cache_dir = rtrim($cacheDir, DIRECTORY_SEPARATOR);
     }
 
     /**
      * Gets the main/version cache directory
      *
-     * @param boolean $with_version
-     * @param bool $create_dir
+     * @param boolean $withVersion
+     * @param bool $createDir
      * @return string
      */
-    public static function getCacheDirectory($with_version = false, $create_dir = false)
+    public static function getCacheDirectory($withVersion = false, $createDir = false)
     {
         // get sub directory name, depending on the data set type
         // (one sub directory for each data set type and version)
@@ -131,13 +131,13 @@ class File implements CacheInterface
         }
         $path = static::$cache_dir;
 
-        if ($with_version === true) {
+        if ($withVersion === true) {
             $path .= DIRECTORY_SEPARATOR . $subDirName;
             $path .= '_v' . Browscap::getParser()->getVersion();
             $path .= '_' . Browscap::VERSION;
         }
 
-        if ($create_dir === true && !file_exists($path)) {
+        if ($createDir === true && !file_exists($path)) {
             mkdir($path, 0777, true);
         }
 

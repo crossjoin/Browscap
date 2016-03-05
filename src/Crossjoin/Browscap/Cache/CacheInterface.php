@@ -19,7 +19,7 @@ interface CacheInterface
      * @param boolean $with_version
      * @return string|null
      */
-    public function get ($key, $with_version = true);
+    public function get($key, $with_version = true);
 
     /**
      * Set cached data for a given key
@@ -29,7 +29,7 @@ interface CacheInterface
      * @param boolean $with_version
      * @return int|false
      */
-    public function set ($key, $content, $with_version = true);
+    public function set($key, $content, $with_version = true);
 
     /**
      * Delete cached data by a given key
@@ -38,7 +38,7 @@ interface CacheInterface
      * @param boolean $with_version
      * @return boolean
      */
-    public function delete ($key, $with_version = true);
+    public function delete($key, $with_version = true);
 
     /**
      * Check if a key is already cached
@@ -47,5 +47,5 @@ interface CacheInterface
      * @param boolean $with_version
      * @return boolean
      */
-    public function exists ($key, $with_version = true);
+    public function exists($key, $with_version = true);
 }
