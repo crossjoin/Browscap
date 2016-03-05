@@ -1,6 +1,8 @@
 <?php
 namespace Crossjoin\Browscap;
 
+use Crossjoin\Browscap\Formatter\FormatterInterface;
+
 /**
  * Main Crossjoin\Browscap class
  *
@@ -12,34 +14,8 @@ namespace Crossjoin\Browscap;
  * or replace nearly all components: the updater, the parser (including the
  * used source), and the formatter (for the result set).
  *
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
  * @package Crossjoin\Browscap
  * @author Christoph Ziegenberg <christoph@ziegenberg.com>
- * @copyright Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- * @version 1.0.4
- * @license http://www.opensource.org/licenses/MIT MIT License
  * @link https://github.com/crossjoin/browscap
  */
 class Browscap
@@ -81,7 +57,7 @@ class Browscap
     /**
      * Formatter to use
      *
-     * @var \Crossjoin\Browscap\Formatter\AbstractFormatter
+     * @var FormatterInterface
      */
     protected static $formatter;
 
@@ -113,7 +89,7 @@ class Browscap
      * formatter instance with the detected settings
      *
      * @param string $user_agent
-     * @return \Crossjoin\Browscap\Formatter\AbstractFormatter
+     * @return FormatterInterface
      */
     public function getBrowser($user_agent = null)
     {
@@ -156,15 +132,15 @@ class Browscap
     /**
      * Set the formatter instance to use for the getBrowser() result
      *
-     * @param \Crossjoin\Browscap\Formatter\AbstractFormatter $formatter
+     * @param FormatterInterface $formatter
      */
-    public static function setFormatter(Formatter\AbstractFormatter $formatter)
+    public static function setFormatter(FormatterInterface $formatter)
     {
         static::$formatter = $formatter;
     }
 
     /**
-     * @return Formatter\AbstractFormatter
+     * @return FormatterInterface
      */
     public static function getFormatter()
     {

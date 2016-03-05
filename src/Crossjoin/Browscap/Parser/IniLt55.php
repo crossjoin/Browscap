@@ -3,6 +3,7 @@ namespace Crossjoin\Browscap\Parser;
 
 use Crossjoin\Browscap\Browscap;
 use Crossjoin\Browscap\Cache;
+use Crossjoin\Browscap\Formatter\FormatterInterface;
 use Crossjoin\Browscap\Updater;
 
 /**
@@ -105,7 +106,7 @@ extends AbstractParser
      * (or null if no data available, no even the default browser)
      *
      * @param string $user_agent
-     * @return \Crossjoin\Browscap\Formatter\AbstractFormatter|null
+     * @return FormatterInterface|null
      */
     public function getBrowser($user_agent)
     {
