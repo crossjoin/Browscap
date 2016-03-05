@@ -7,38 +7,11 @@ namespace Crossjoin\Browscap\Parser;
  * This parser overwrites parts of the basic ini parser class to use special
  * features form PHP 5.5 (generators) to optimize memory usage and performance.
  *
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
  * @package Crossjoin\Browscap
  * @author Christoph Ziegenberg <christoph@ziegenberg.com>
- * @copyright Copyright (c) 2014-2015 Christoph Ziegenberg <christoph@ziegenberg.com>
- * @version 1.0.4
- * @license http://www.opensource.org/licenses/MIT MIT License
  * @link https://github.com/crossjoin/browscap
  */
-class Ini
-extends IniLt55
+class Ini extends IniLt55
 {
     /**
      * Gets some possible patterns that have to be matched against the user agent. With the given
@@ -52,14 +25,14 @@ extends IniLt55
      */
     protected function getPatterns($user_agent)
     {
-        $starts = $this->getPatternStart($user_agent, true);
+        $starts = static::getPatternStart($user_agent, true);
         $length = strlen($user_agent);
         $prefix = static::getCachePrefix();
 
         // check if pattern files need to be created
         $pattern_file_missing = false;
         foreach ($starts as $start) {
-            $sub_key = $this->getPatternCacheSubkey($start);
+            $sub_key = $this->getPatternCacheSubKey($start);
             if (!static::getCache()->exists("$prefix.patterns." . $sub_key)) {
                 $pattern_file_missing = true;
                 break;
@@ -74,12 +47,12 @@ extends IniLt55
 
         // get patterns for the given start hashes
         foreach ($starts as $tmp_start) {
-            $tmp_sub_key = $this->getPatternCacheSubkey($tmp_start);
+            $tmp_sub_key = $this->getPatternCacheSubKey($tmp_start);
             /** @var \Crossjoin\Browscap\Cache\File $cache */
             $cache = static::getCache();
             $file  = $cache->getFileName("$prefix.patterns." . $tmp_sub_key);
             if (file_exists($file)) {
-                $handle = fopen($file, "r");
+                $handle = fopen($file, 'r');
                 if ($handle) {
                     try {
                         $found = false;
@@ -91,7 +64,7 @@ extends IniLt55
 
                                 // the user agent must be longer than the pattern without place holders
                                 if ($len <= $length) {
-                                    list(,,$patterns) = explode(" ", $buffer, 3);
+                                    list(,,$patterns) = explode(' ', $buffer, 3);
                                     yield trim($patterns);
                                 }
                                 $found = true;
