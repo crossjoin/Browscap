@@ -2,7 +2,8 @@
 namespace Crossjoin\Browscap\Parser;
 
 use Crossjoin\Browscap\Browscap;
-use Crossjoin\Browscap\Cache;
+use Crossjoin\Browscap\Cache\CacheInterface;
+use Crossjoin\Browscap\Cache\File;
 use Crossjoin\Browscap\Formatter\FormatterInterface;
 
 /**
@@ -27,7 +28,7 @@ abstract class AbstractParser
     /**
      * The cache instance
      *
-     * @var \Crossjoin\Browscap\Cache\AbstractCache
+     * @var CacheInterface
      */
     protected static $cache;
 
@@ -100,12 +101,12 @@ abstract class AbstractParser
     /**
      * Gets a cache instance
      *
-     * @return Cache\AbstractCache
+     * @return CacheInterface
      */
     public static function getCache()
     {
         if (static::$cache === null) {
-            static::$cache = new Cache\File();
+            static::$cache = new File();
         }
         return static::$cache;
     }
@@ -113,9 +114,9 @@ abstract class AbstractParser
     /**
      * Sets a cache instance
      *
-     * @param Cache\AbstractCache $cache
+     * @param CacheInterface $cache
      */
-    public static function setCache(Cache\AbstractCache $cache)
+    public static function setCache(CacheInterface $cache)
     {
         static::$cache = $cache;
     }

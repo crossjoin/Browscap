@@ -2,7 +2,8 @@
 namespace Crossjoin\Browscap\Parser;
 
 use Crossjoin\Browscap\Browscap;
-use Crossjoin\Browscap\Cache;
+use Crossjoin\Browscap\Cache\CacheInterface;
+use Crossjoin\Browscap\Cache\File;
 use Crossjoin\Browscap\Formatter\FormatterInterface;
 use Crossjoin\Browscap\Updater;
 
@@ -122,11 +123,11 @@ class IniLt55 extends AbstractParser
     /**
      * Sets a cache instance
      *
-     * @param Cache\AbstractCache $cache
+     * @param CacheInterface $cache
      */
-    public static function setCache(Cache\AbstractCache $cache)
+    public static function setCache(CacheInterface $cache)
     {
-        if (!($cache instanceof Cache\File)) {
+        if (!($cache instanceof File)) {
             throw new \InvalidArgumentException(
                 "This parser requires a cache instance of '\\Crossjoin\\Browscap\\Cache\\File'."
             );
@@ -154,7 +155,7 @@ class IniLt55 extends AbstractParser
         if ($updater !== null && ($updater instanceof Updater\None) === false) {
             // initialize variables
             $prefix   = static::getCachePrefix();
-            /** @var Cache\File $cache */
+            /** @var File $cache */
             $cache    = static::getCache();
             $path     = $cache->getFileName("$prefix.ini", true);
             $readable = is_readable($path);
@@ -301,7 +302,7 @@ class IniLt55 extends AbstractParser
         $pattern_arr = array();
         foreach ($starts as $tmp_start) {
             $tmp_sub_key = $this->getPatternCacheSubKey($tmp_start);
-            /** @var Cache\File $cache */
+            /** @var File $cache */
             $cache = static::getCache();
             $file  = $cache->getFileName("$prefix.patterns." . $tmp_sub_key);
             if (file_exists($file)) {
@@ -532,7 +533,7 @@ class IniLt55 extends AbstractParser
         }
 
         $return = array();
-        /** @var Cache\File $cache */
+        /** @var File $cache */
         $cache  = static::getCache();
         $file   = $cache->getFileName("$prefix.iniparts." . $sub_key);
         if (file_exists($file)) {
