@@ -540,7 +540,7 @@ class IniLt55 extends AbstractParser
             $handle = fopen($file, "r");
             if ($handle) {
                 while (($buffer = fgets($handle)) !== false) {
-                    if (substr($buffer, 0, 32) === $pattern_hash) {
+                    if (strpos($buffer, $pattern_hash) === 0) {
                         $return = json_decode(substr($buffer, 32), true);
                         break;
                     }
