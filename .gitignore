@@ -213,13 +213,6 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
-.idea/.name
-.idea/Browscap.iml
-.idea/dictionaries/Christoph.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/php.xml
-.idea/scopes/scope_settings.xml
-.idea/vcs.xml
-.idea/workspace.xml
+
+#PHPStorm
+.idea/*
