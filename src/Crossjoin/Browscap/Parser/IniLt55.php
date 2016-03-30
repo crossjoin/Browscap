@@ -736,8 +736,8 @@ class IniLt55 extends AbstractParser
             // Undo the \\x replacement, that is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
             // @source https://github.com/browscap/browscap-php
             $pattern = preg_replace(
-                ['/(?<!\\\\)\\.\\*/', '/(?<!\\\\)\\./', '/(?<!\\\\)\\\\x/'],
-                ['\\*', '\\?', '\\x'],
+                array('/(?<!\\\\)\\.\\*/', '/(?<!\\\\)\\./', '/(?<!\\\\)\\\\x/'),
+                array('\\*', '\\?', '\\x'),
                 $pattern
             );
 
