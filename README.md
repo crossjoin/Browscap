@@ -1,8 +1,8 @@
 # Browscap Parsing Class
 
 ## Introduction
-Crossjoin\Browscap allows to check for browser settings based on the user agent string, using the data from Browscap 
-(the [Browser Capabilities Project](browscap.org)). 
+Crossjoin\Browscap allows to check for browser settings based on the user agent string, using the data from
+the [Browser Capabilities Project](browscap.org).
 
 Although PHP has the native [`get_browser()`](http://php.net/get_browser) function to do this, this implementation 
 offers some advantages:
@@ -10,32 +10,33 @@ offers some advantages:
 [`browscap`](http://www.php.net/manual/en/misc.configuration.php#ini.browscap), which is flagged as `PHP_INI_SYSTEM` 
 (so it can only be set in php.ini or httpd.conf, which isn't allowed in many cases, e.g. in shared hosting 
 environments).
-- It's much faster than the PHP function (about 500 times, depending on the PHP version, the searched user agent and 
-other factors)
-- It includes automatic updates of the Browscap source
+- It's much faster than the PHP function (several hundred times, depending on the PHP version, the searched user agent
+and other factors)
+- It includes automatic updates of the Browscap source data
 
 Compared to other PHP Browscap parsers, this implementation offers the following advantages
-- It's very fast due to optimized caching of the Browscap data, for example it's 
-[much faster](https://github.com/browscap/browscap-php/issues/20#issuecomment-137993153) than  
-[Browscap-PHP](https://github.com/browscap/browscap-php)
-- It supports all PHP versions from 5.3.x to 7.0.x and uses newest available features for best performance
-- It has a very low memory consumption (for parsing and generating cache data)
-- All components are extensible - use your own parser, updater, formatter or cache functionality
+- The default parser very fast due to optimized storage in an internal SQLite database
+- It supports the PHP versions 5.6.x to 7.0.x and uses newest available features for best performance
+- It has a very low memory consumption (for parsing and generating parser data)
+- All components are extensible - use your own source, parser (writer and reader) or formatter
+- Use property filters to remove unnecessary Browscap properties from the parser data or the output.
+- Either use the auto-update feature or run updates via command-line instead.
 
-You can also switch the type of data set to use - small, medium (default) or large:
-- The default data set (containing all known browsers and the default properties)
-- The small data set (with the most important browser only and the default properties)
-- The large data set (with all known browsers and additional properties)
-- The parsing time is fast for all versions, it mainly affects the time and memory consumption for the cache data 
-preparation.
+You can also switch the type of data set to use:
+- The `lite` data set (with the most important user agent patterns only and the default properties)
+- The `standard` data set (containing all known user agent patterns and the default properties)
+- The `full` data set (with all known user agent patterns and additional properties)
+- The parsing time increases with the number of user agent patterns contained in the source, but it's fast for all
+versions.
 
 ## Requirements
-- PHP 5.3+ (it has been successfully tested with PHP 5.3.28 - PHP 7.0.0RC2, perhaps also older versions still work)
+- PHP >= 5.6 (support for older versions see below)
+- The 'pdo_sqlite' or 'sqlite3' extension (please not that this is not checked on composer install/update,
+because only one of these extension is required and composer doesn't support this).
+- For updates via download: cURL extension, `allow_url_fopen` enabled in php.ini (for more details see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/))
 
-### Suggestions
-- PHP 5.5+ recommended (to be able to use generators, which reduces memory consumption a lot)
-- PHP 7.0+ for best performance (again much faster than PHP 5.x)
-- For automatic updates: cURL extension, `allow_url_fopen` enabled in php.ini, or local Browscap file `browscap` set in php.ini
+### Releases for older PHP Versions
+- For older PHP versions see [Crossjoin\Browscap 1.x](https://github.com/crossjoin/Browscap/tree/1.x).)
 
 ## Package installation
 Crossjoin\Browscap is provided as a Composer package which can be installed by adding the package to your composer.json 
@@ -43,173 +44,356 @@ file:
 ```php
 {
     "require": {
-        "crossjoin/browscap": "1.0.*"
+        "crossjoin/browscap": "~3.0.0"
     }
 }
 ```
 
-You can also install it manually and use a [PSR-0-compliant](http://www.php-fig.org/psr/psr-0/) autoloader (e.g. from 
-the [Zend Framework](http://framework.zend.com/manual/2.3/en/modules/zend.loader.standard-autoloader.html) or a 
-[standalone class](https://gist.github.com/lisachenko/1335891)).
-
-## Usage
+## Basic Usage
 
 ### Simple example
 
-You can directly use the Browscap parser. The Browscap data are automatically downloaded, updated and prepared when 
-required.
+You can directly use the Browscap parser. If the data for the parser are missing, they will be created automatically
+if possible (trying several available options).
 
 ```php
 <?php
-// Include Composer autoloader
+// Include composer auto-loader
 require_once '../vendor/autoload.php';
-  
-// Get browser details
+ 
+// Init
 $browscap = new \Crossjoin\Browscap\Browscap();
-$settings = $browscap->getBrowser()->getData();
+ 
+// Get current browser details (taken from $_SERVER['HTTP_USER_AGENT'])
+$settings = $browscap->getBrowser();
 ```
 
-### Recommended usage in production
+### Automatic updates
 
-In production you will prefer to update the data in the background. Therefore we deactivate the automatic updates when 
-creating the `\Crossjoin\Browscap\Browscap` instance...
+Although missing data are created automatically, automatic updates are disabled by default (which is different
+from version 1.x). To activate automatic updates, you must set the update probability.
 
 ```php
 <?php
-// Include Composer autoloader
+// Include composer auto-loader
 require_once '../vendor/autoload.php';
-  
-// Get browser details
-$browscap = new \Crossjoin\Browscap\Browscap(false); // disables automatic updates
-$settings = $browscap->getBrowser()->getData();
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Activate auto-updates
+// Value: Percentage of getBrowser calls that will trigger the update check
+$browscap->setAutoUpdateProbability(1);
+ 
+// Get current browser details (taken from $_SERVER['HTTP_USER_AGENT'])
+$settings = $browscap->getBrowser();
 ```
 
-...and manually update the data using a second script (e.g. called via a cron job):
+### Manual updates
+
+Manual updates can be run using a script...
 
 ```php
 <?php
-// Include Composer autoloader
+// Include composer auto-loader
 require_once '../vendor/autoload.php';
-  
-// Get browser details
-$browscap = new \Crossjoin\Browscap\Browscap(false);
-  
-// By default the version is checked every 5 days. When you use a cron job, you
-// probably want to control this interval in your cron job configuration. To do
-// so, set the interval to zero here to check for a new version every time you
-// call the cron job.
-$browscap->getUpdater()->setInterval(0);
-  
-// Run the browscap data update and preparation
-$browscap->update();
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+$forceUpdate = false; // If you do not force an update, it will only be done if required
+ 
+// Run update
+$browscap->update($forceUpdate);
 ```
 
-### Advanced usage
-
-#### Switch Browscap data set
-
-Browscap data are available in multiple versions. A very small data set with the most important browsers and search 
-engines only, a medium data set (default) with all browsers and search engines and the same properties as returned by 
-the native PHP function `get_browser()`, and a large data set with additional properties.
-
-```php
-// Set the data set type to use.
-//
-// Possible values:
-// - \Crossjoin\Browscap\Browscap::DATASET_TYPE_DEFAULT
-// - \Crossjoin\Browscap\Browscap::DATASET_TYPE_SMALL
-// - \Crossjoin\Browscap\Browscap::DATASET_TYPE_LARGE
-\Crossjoin\Browscap\Browscap::setDatasetType(\Crossjoin\Browscap\Browscap::DATASET_TYPE_LARGE);
+or via the command-line interface (normally you will find 'browscap' or 'browscap.php' in composers 'vendor/bin/'):
+```
+browscap update [--force]
 ```
 
-#### Set cache directory
+## Formatters
 
-By default the system temp directory is used to cache the Browscap data. Of course you can also define a different one:
+### Replacement for the PHP get_browser() function
+
+The returned setting are by default formatted like the result of the PHP get_browser() function (an default object
+with values in a special format). You can also get an array as return value, by modifying the formatter:
 
 ```php
-// Set an own cache directory (otherwise the system temp directory is used)
-\Crossjoin\Browscap\Cache\File::setCacheDirectory(__DIR__ . DIRECTORY_SEPARATOR . 'tmp');
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Get standard object
+$settings = $browscap->getBrowser();
+ 
+// Get array
+$arrayFormatter = new \Crossjoin\Browscap\Formatter\PhpGetBrowser(
+    \Crossjoin\Browscap\Formatter\PhpGetBrowser::RETURN_ARRAY
+);
+$browscap->setFormatter($arrayFormatter);
+$settings = $browscap->getBrowser();
 ```
 
-#### Switch the updater
-
-The library automatically checks which method can be used to load the update data. If the cURL extension is available, 
-this one is used to load the Browscap data (`\Crossjoin\Browscap\Updater\Curl`). Otherwise `file_get_contents` is used 
-(`\Crossjoin\Browscap\Updater\FileGetContents`), if the 
-[php.ini setting `allow_url_fopen`](http://php.net/manual/en/filesystem.configuration.php#ini.allow-url-fopen) is 
-enabled. 
-
-If no method is available to load the data from the Browscap servers, the 
-[php.ini setting `browscap`](http://php.net/manual/en/misc.configuration.php#ini.browscap) is used to load a local 
-Browscap version (`\Crossjoin\Browscap\Updater\Local`). If no Browscap file is configured, an empty updater is set 
-(`\Crossjoin\Browscap\Updater\None`), which won't update anything.
-
-If you prefer to set the updater manually, you can do it as follows:
+Alternatively you can use the Browscap object as function, with the same arguments like PHPs get_browser():
 
 ```php
-// Set the local updater and use your own Browscap data file
-$updater = new \Crossjoin\Browscap\Updater\Local();
-$updater->setOption('LocalFile', __DIR__ . DIRECTORY_SEPARATOR . 'browscap.ini');
-\Crossjoin\Browscap\Browscap::setUpdater($updater);
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+$userAgent = $_SERVER['HTTP_USER_AGENT'];
+ 
+// Get standard object
+$settings = $browscap($userAgent);
+ 
+// Get array
+$settings = $browscap($userAgent, true);
 ```
 
-#### Proxy configuration
+### Optimized formatter
 
-You can also configure a proxy server for loading the Browscap data.
+If you want to get a better result, you should use the `Optimized` formatter. It doesn't change the keys, returns
+all values with correct types (if valid for all possible property values) and replaces 'unknown' strings with NULL
+values. It also removes no more used properties from the result (e.g. 'AolVersion').
 
 ```php
-// Get the updater instance
-$updater = \Crossjoin\Browscap\Browscap::getUpdater();
-  
-// Set HTTP proxy server (without authentication)
-$updater->setOptions(array(
-    'ProxyProtocol' => \Crossjoin\Browscap\Updater\AbstractUpdaterRemote::PROXY_PROTOCOL_HTTP,
-    'ProxyHost'     => '12.34.56.78',
-    'ProxyPort'     => '8080',
-));
-  
-// Set HTTPS proxy server (with HTTP Basic authentication, the default mode.
-// This HAS NOT BEEN TESTED YET, please report problems!
-//$updater->setOptions(array(
-//    'ProxyProtocol' => \Crossjoin\Browscap\Updater\AbstractUpdaterRemote::PROXY_PROTOCOL_HTTPS,
-//    'ProxyHost'     => '23.23.74.33',
-//    'ProxyPort'     => '80',
-//    'ProxyUser'     => 'user',
-//    'ProxyPassword' => 'p4ssw0rd',
-//));
-  
-// Set HTTPS proxy server (with NTLM authentication, for cURL updater only.
-// This HAS NOT BEEN TESTED YET, please report problems!
-//$updater->setOptions(array(
-//    'ProxyProtocol' => \Crossjoin\Browscap\Updater\AbstractUpdaterRemote::PROXY_PROTOCOL_HTTPS,
-//    'ProxyHost'     => '23.23.74.33',
-//    'ProxyPort'     => '80',
-//    'ProxyAuth'     => \Crossjoin\Browscap\Updater\AbstractUpdaterRemote::PROXY_AUTH_NTLM,
-//    'ProxyUser'     => 'user',
-//    'ProxyPassword' => 'p4ssw0rd',
-//));
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Get optimized result
+$optimizedFormatter = new \Crossjoin\Browscap\Formatter\Optimized();
+$browscap->setFormatter($optimizedFormatter);
+$settings = $browscap->getBrowser();
 ```
 
-#### Format the result
+### Custom formatters
 
-By default, the returned result is formatted like the result of the native PHP function `get_browser()`, but you can 
-use your own formatter to adjust the result:
+Of course you can also create your own formatter, either by using the general formatter
+`\Crossjoin\Browscap\Formatter\Formatter` and setting the required options (see below), or by creating a new one that
+extends the `\Crossjoin\Browscap\Formatter\FormatterInterface`:
 
 ```php
-// Set an own formatter that extends \Crossjoin\Browscap\Formatter\AbstractFormatter
-$formatter = new \My\Browscap\Formatter\Extended();
-\Crossjoin\Browscap\Browscap::setFormatter($formatter);
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Get customized result
+$formatter = new \Crossjoin\Browscap\Formatter\Formatter(
+    \Crossjoin\Browscap\Formatter\Formatter::RETURN_ARRAY |
+    \Crossjoin\Browscap\Formatter\Formatter::KEY_LOWER |
+    \Crossjoin\Browscap\Formatter\Formatter::VALUE_TYPED
+);
+$browscap->setFormatter($formatter);
+$settings = $browscap->getBrowser();
+ 
+// Use custom formatter tah extends \Crossjoin\Browscap\Formatter\FormatterInterface
+$formatter = new \My\Formatter();
+$browscap->setFormatter($formatter);
+$settings = $browscap->getBrowser();
 ```
 
-#### Change the parser
+## Property Filters
 
-You want to implement your own parser? Why not!
+As mentioned before, the `Optimized` formatter removes properties from the returned data. This
+is done by a filter, which is a new feature from version 2.x/3.x.
+
+### Filter the output
+
+You can define individual property filters for the formatter:
 
 ```php
-// Set an own parser implementation that extends 
-// \Crossjoin\Browscap\Parser\AbstractParser (also for other formats than INI)
-$parser = new \My\Browscap\Parser\Ini();
-\Crossjoin\Browscap\Browscap::setParser($parser);
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Set list of allowed properties
+$filter = new \Crossjoin\Browscap\PropertyFilter\Allowed();
+$filter->setProperties(['Version', 'Browser', 'isMobileDevice']);
+$browscap->getFormatter()->setPropertyFilter($filter);
+ 
+// Only the allowed properties will be returned...
+$settings = $browscap->getBrowser();
+ 
+// Set list of disallowed properties
+// IMPORTANT: The new property filter will replace the previous one!
+$filter = new \Crossjoin\Browscap\PropertyFilter\Disallowed();
+$filter->addProperty('Comment');
+$filter->addProperty('browser_name_pattern');
+$filter->addProperty('browser_name_regex');
+ 
+// Properties except the filtered ones will be returned...
+$settings = $browscap->getBrowser();
+ 
+// Remove the filter by setting it to the default filter
+$filter = new \Crossjoin\Browscap\PropertyFilter\None();
+$browscap->getFormatter()->setPropertyFilter($filter);
+ 
+// All properties will be returned...
+$settings = $browscap->getBrowser();
+```
+
+### Filter the parser data
+
+No only the output can be filtered. You can also filter the data at a higher level, when creating his data set
+from the source (which can reduce the size of the generated data by up to 50%):
+
+```php
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Set list of allowed properties
+$filter = new \Crossjoin\Browscap\PropertyFilter\Allowed();
+$filter->setProperties(['Version', 'Browser', 'isMobileDevice']);
+$browscap->getParser()->setPropertyFilter($filter);
+ 
+// Only the filtered properties are returned...
+$settings = $browscap->getBrowser();
+ 
+// Of course you can still define additional property filters for the formatter
+// to further reduce the number of properties.
+$filter = new \Crossjoin\Browscap\PropertyFilter\Disallowed(['isMobileDevice']);
+$browscap->getFormatter()->setPropertyFilter($filter);
+ 
+// Properties are now reduced to 'Version' and 'Browser'...
+// NOTE: New parser property filters will trigger an update of the parser data!
+$settings = $browscap->getBrowser();
+```
+
+## Sources
+
+By default, the current browscap (PHP ini) source is downloaded automatically (`standard` type).
+
+### Change the downloaded source type
+
+```php
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Set the 'standard' source (medium data set, with default properties)
+$type = \Crossjoin\Browscap\Type::STANDARD;
+$source = new \Crossjoin\Browscap\Source\Ini\BrowscapOrg($type);
+$browscap->getParser()->setSource($source);
+ 
+// Set the 'lite' source (smallest data set, with the most important properties)
+$type = \Crossjoin\Browscap\Type::LITE;
+$source = new \Crossjoin\Browscap\Source\Ini\BrowscapOrg($type);
+$browscap->getParser()->setSource($source);
+ 
+// Set the 'full' source (largest data set, with additional properties)
+$type = \Crossjoin\Browscap\Type::FULL;
+$source = new \Crossjoin\Browscap\Source\Ini\BrowscapOrg($type);
+$browscap->getParser()->setSource($source);
+ 
+// Get properties...
+// NOTE: New parser sources will trigger an update of the parser data!
+$settings = $browscap->getBrowser();
+```
+
+### Use the source file defined in the `browscap` PHP directive
+
+```php
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Use the browscap file defined in the PHP settings (e.g. in php.ini)
+$source = new \Crossjoin\Browscap\Source\Ini\PhpSetting();
+$browscap->getParser()->setSource($source);
+ 
+// Get properties...
+// NOTE: New parser sources will trigger an update of the parser data!
+$settings = $browscap->getBrowser();
+```
+
+### Use a custom source file
+
+```php
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Set a custom file as source
+$source = new \Crossjoin\Browscap\Source\Ini\File('path/to/browscap.ini');
+$browscap->getParser()->setSource($source);
+ 
+// Get properties...
+// NOTE: New parser sources will trigger an update of the parser data!
+$settings = $browscap->getBrowser();
+```
+
+## Misc
+
+### Data directory
+
+The parser data are saved in the temporary directory of the system, but you can define an own one:
+
+```php
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Set a custom data directory
+$parser = new \Crossjoin\Browscap\Parser\Sqlite\Parser('path/to/data/directory');
+$browscap->setParser($parser);
+ 
+// Get properties...
+// NOTE: A new parser data directory will trigger an update of the parser data!
+$settings = $browscap->getBrowser();
+```
+
+### Client settings for the source download
+
+If you download the source (default), you perhaps want to use a proxy or other settings for
+the client. You can do so by providing the settings for the GuzzleHttp client (see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/)):
+
+```php
+<?php
+// Include composer auto-loader
+require_once '../vendor/autoload.php';
+ 
+// Init
+$browscap = new \Crossjoin\Browscap\Browscap();
+ 
+// Set a custom data directory
+$type = \Crossjoin\Browscap\Type::STANDARD;
+$clientSettings = ['proxy' => 'tcp://localhost:8125'];
+$source = new \Crossjoin\Browscap\Source\Ini\BrowscapOrg($type, $clientSettings);
+$browscap->setParser($parser);
+ 
+// Get properties...
+$settings = $browscap->getBrowser();
 ```
 
 ## Issues and feature requests

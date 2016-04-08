@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Browscap Command Line Interface Application
+ *
+ * @author Christoph Ziegenberg <ziegenberg@crossjoin.com>
+ * @link https://github.com/crossjoin/browscap
+ */
+
+use Crossjoin\Browscap\Command\Update;
+use Symfony\Component\Console\Application;
+
+// Find composer auto-loader
+$autoLoadFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (is_readable($autoLoadFile)) {
+    /** @noinspection PhpIncludeInspection */
+    require_once $autoLoadFile;
+} else {
+    $dir = __DIR__;
+    $found = false;
+    while (($dir = dirname($dir)) !== '.') {
+        $autoLoadFile = $dir . DIRECTORY_SEPARATOR . 'autoload.php';
+        /** @noinspection NotOptimalIfConditionsInspection */
+        if (is_readable($autoLoadFile)) {
+            /** @noinspection PhpIncludeInspection */
+            require_once $autoLoadFile;
+            $found = true;
+            break;
+        }
+    }
+    if ($found === false) {
+        fwrite(STDERR, 'Could not find Composer auto-loader.' . PHP_EOL);
+        exit(1);
+    }
+}
+
+$application = new Application();
+$application->add(new Update());
+$application->run();
