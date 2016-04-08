@@ -20,6 +20,7 @@ use Crossjoin\Browscap\Parser\Sqlite\Parser;
  */
 class Browscap
 {
+    const VERSION = '2.0.0';
 
     /**
      * @var ParserInterface
