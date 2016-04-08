@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Crossjoin\Browscap\Parser;
 
 use Crossjoin\Browscap\PropertyFilter\PropertyFilterInterface;

@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Crossjoin\Browscap\PropertyFilter;
 
 use Crossjoin\Browscap\Exception\InvalidArgumentException;

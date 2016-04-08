@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Crossjoin\Browscap\Tests\Mock\Parser\Sqlite\Adapter;
 
 use Crossjoin\Browscap\Parser\Sqlite\Adapter\Sqlite3;

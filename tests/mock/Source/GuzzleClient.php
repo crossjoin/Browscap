@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Crossjoin\Browscap\Tests\Mock\Source;
 
 use GuzzleHttp\Client;

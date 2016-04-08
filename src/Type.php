@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Crossjoin\Browscap;
 
 use Crossjoin\Browscap\Exception\InvalidArgumentException;
