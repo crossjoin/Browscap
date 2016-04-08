@@ -10,62 +10,8 @@ namespace Crossjoin\Browscap\PropertyFilter;
  * @author Christoph Ziegenberg <ziegenberg@crossjoin.com>
  * @link https://github.com/crossjoin/browscap
  */
-class Disallowed implements PropertyFilterInterface
+class Disallowed extends PropertyAbstract
 {
-    /**
-     * @var array
-     */
-    protected $properties = [];
-
-    /**
-     * Disallowed constructor.
-     *
-     * @param array $properties
-     */
-    public function __construct(array $properties = [])
-    {
-        $this->setProperties($properties);
-    }
-
-    /**
-     * @return array
-     */
-    public function getProperties() : array
-    {
-        return $this->properties;
-    }
-
-    /**
-     * @param array $properties
-     *
-     * @return Disallowed
-     */
-    public function setProperties(array $properties) : Disallowed
-    {
-        $this->properties = [];
-
-        foreach ($properties as $property) {
-            $this->addProperty($property);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $property
-     *
-     * @return Disallowed
-     */
-    public function addProperty(string $property) : Disallowed
-    {
-        $property = strtolower($property);
-        if (!in_array($property, $this->properties, true)) {
-            $this->properties[] = $property;
-        }
-
-        return $this;
-    }
-
     /**
      * @inheritdoc
      */
