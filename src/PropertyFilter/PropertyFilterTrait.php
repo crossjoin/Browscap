@@ -20,7 +20,7 @@ trait PropertyFilterTrait
     /**
      * @inheritdoc
      */
-    public function getPropertyFilter()
+    public function getPropertyFilter() : PropertyFilterInterface
     {
         if ($this->propertyFilter === null) {
             $this->propertyFilter = new None();

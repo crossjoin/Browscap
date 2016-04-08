@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Source\Ini;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\SourceConditionNotSatisfiedException;
 use Crossjoin\Browscap\Exception\SourceUnavailableException;
 use Crossjoin\Browscap\Exception\UnexpectedValueException;
@@ -36,18 +35,11 @@ class BrowscapOrg extends DownloadAbstract implements SourceInterface, SourceFac
      * @param int $type
      * @param array $clientOptions
      *
-     * @throws InvalidArgumentException
      * @throws SourceConditionNotSatisfiedException
      * @throws UnexpectedValueException
      */
-    public function __construct($type = Type::STANDARD, array $clientOptions = [])
+    public function __construct(int $type = Type::STANDARD, array $clientOptions = [])
     {
-        if (!is_int($type)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($type) . "' for argument 'type'."
-            );
-        }
-        
         $this->setType($type);
         parent::__construct($this->getSourceUri(), $clientOptions);
     }
@@ -58,7 +50,7 @@ class BrowscapOrg extends DownloadAbstract implements SourceInterface, SourceFac
      * @throws SourceUnavailableException
      * @throws \RuntimeException
      */
-    public function getReleaseTime()
+    public function getReleaseTime() : int
     {
         $stream = $this->loadContent(self::BASE_URI . '/version');
 
@@ -75,7 +67,7 @@ class BrowscapOrg extends DownloadAbstract implements SourceInterface, SourceFac
      * @throws SourceUnavailableException
      * @throws \RuntimeException
      */
-    public function getVersion()
+    public function getVersion() : int
     {
         $stream = $this->loadContent(self::BASE_URI . '/version-number');
 
@@ -89,17 +81,10 @@ class BrowscapOrg extends DownloadAbstract implements SourceInterface, SourceFac
     /**
      * @param int $type
      *
-     * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
-    protected function setType($type)
+    protected function setType(int $type)
     {
-        if (!is_int($type)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($type) . "' for argument 'type'."
-            );
-        }
-        
         switch ($type) {
             case Type::LITE:
                 $sourceType = 'Lite_PHP_BrowscapINI';
@@ -121,7 +106,7 @@ class BrowscapOrg extends DownloadAbstract implements SourceInterface, SourceFac
     /**
      * @inheritdoc
      */
-    public function getType()
+    public function getType() : int
     {
         return $this->type;
     }
@@ -132,7 +117,7 @@ class BrowscapOrg extends DownloadAbstract implements SourceInterface, SourceFac
      *
      * @inheritdoc
      */
-    public function getContent()
+    public function getContent() : \Generator
     {
         return parent::getContent();
     }

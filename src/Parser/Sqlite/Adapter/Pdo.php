@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Parser\Sqlite\Adapter;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\ParserConditionNotSatisfiedException;
 use Crossjoin\Browscap\Exception\ParserConfigurationException;
 use Crossjoin\Browscap\Exception\ParserRuntimeException;
@@ -27,17 +26,10 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
      *
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      */
-    public function __construct($fileName)
+    public function __construct(string $fileName)
     {
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         if (!$this->checkConditions()) {
             throw new ParserConditionNotSatisfiedException('PDO extension with Sqlite support missing.');
         }
@@ -48,7 +40,7 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
     /**
      * @return bool
      */
-    protected function checkConditions()
+    protected function checkConditions() : bool
     {
         return (class_exists('\PDO') && in_array('sqlite', \PDO::getAvailableDrivers(), true));
     }
@@ -57,7 +49,7 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
      * @return \PDO
      * @throws ParserConfigurationException
      */
-    protected function getConnection()
+    protected function getConnection() : \PDO
     {
         if ($this->connection === null) {
             try {
@@ -79,7 +71,7 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function beginTransaction()
+    public function beginTransaction() : bool
     {
         try {
             return $this->getConnection()->beginTransaction();
@@ -94,7 +86,7 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function commitTransaction()
+    public function commitTransaction() : bool
     {
         try {
             return $this->getConnection()->commit();
@@ -106,18 +98,11 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function query($statement)
+    public function query(string $statement) : array
     {
-        if (!is_string($statement)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($statement) . "' for argument 'statement'."
-            );
-        }
-        
         try {
             return $this->getConnection()->query($statement)->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
@@ -128,18 +113,11 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function prepare($statement)
+    public function prepare(string $statement) : PreparedStatementInterface
     {
-        if (!is_string($statement)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($statement) . "' for argument 'statement'."
-            );
-        }
-        
         try {
             $preparedStatement = $this->getConnection()->prepare($statement);
             return new PdoPreparedStatement($preparedStatement);
@@ -151,18 +129,11 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function exec($statement)
+    public function exec(string $statement) : bool
     {
-        if (!is_string($statement)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($statement) . "' for argument 'statement'."
-            );
-        }
-        
         try {
             return ($this->getConnection()->exec($statement) !== false);
         } catch (\PDOException $e) {

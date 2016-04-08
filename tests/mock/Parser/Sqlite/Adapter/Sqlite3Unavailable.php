@@ -17,7 +17,7 @@ class Sqlite3Unavailable extends Sqlite3
     /**
      * @return bool
      */
-    protected function checkConditions()
+    protected function checkConditions() : bool
     {
         return false;
     }

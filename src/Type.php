@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
-
 /**
  * Class Type
  *
@@ -23,16 +21,9 @@ final class Type
      * @param int $type
      *
      * @return bool
-     * @throws InvalidArgumentException
      */
-    public static function isValid($type)
+    public static function isValid(int $type) : bool
     {
-        if (!is_int($type)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($type) . "' for argument 'type'."
-            );
-        }
-
         return in_array($type, [self::UNKNOWN, self::STANDARD, self::FULL, self::LITE], true);
     }
 
@@ -40,17 +31,10 @@ final class Type
      * @param int $type
      *
      * @return string
-     * @throws InvalidArgumentException
      */
-    public static function getName($type)
+    public static function getName(int $type) : string
     {
-        if (!is_int($type)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($type) . "' for argument 'type'."
-            );
-        }
-
         $names = [self::UNKNOWN => 'unknown', self::STANDARD => 'standard', self::FULL => 'full', self::LITE => 'lite'];
-        return array_key_exists($type, $names) ? $names[$type] : 'invalid';
+        return $names[$type] ?? 'invalid';
     }
 }

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Source;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\SourceUnavailableException;
 
 /**
@@ -25,24 +24,17 @@ abstract class FileAbstract
      *
      * @param string $file
      *
-     * @throws InvalidArgumentException
      * @throws SourceUnavailableException
      */
-    public function __construct($file)
+    public function __construct(string $file)
     {
-        if (!is_string($file)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($file) . "' for argument 'file'."
-            );
-        }
-
         $this->setFilePath($file);
     }
 
     /**
      * @return string
      */
-    protected function getFilePath()
+    protected function getFilePath() : string
     {
         return $this->file;
     }
@@ -50,17 +42,10 @@ abstract class FileAbstract
     /**
      * @param string $file
      *
-     * @throws InvalidArgumentException
      * @throws SourceUnavailableException
      */
-    protected function setFilePath($file)
+    protected function setFilePath(string $file)
     {
-        if (!is_string($file)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($file) . "' for argument 'file'."
-            );
-        }
-
         if (!$this->isFileReadable($file)) {
             if (!file_exists($file)) {
                 throw new SourceUnavailableException("File '$file' does not exist.", 1458977223);
@@ -75,16 +60,9 @@ abstract class FileAbstract
      * @param string $file
      *
      * @return bool
-     * @throws InvalidArgumentException
      */
-    protected function isFileReadable($file)
+    protected function isFileReadable(string $file) : bool
     {
-        if (!is_string($file)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($file) . "' for argument 'file'."
-            );
-        }
-
         return is_readable($file);
     }
 
@@ -95,7 +73,7 @@ abstract class FileAbstract
      *
      * @throws SourceUnavailableException
      */
-    public function getContent()
+    public function getContent() : \Generator
     {
         $file = $this->getFilePath();
 

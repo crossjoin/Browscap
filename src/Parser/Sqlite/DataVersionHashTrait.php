@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Parser\Sqlite;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
-
 /**
  * Trait DataVersionHashTrait
  *
@@ -22,24 +20,16 @@ trait DataVersionHashTrait
     /**
      * @return string
      */
-    protected function getDataVersionHash()
+    protected function getDataVersionHash() : string
     {
         return $this->dataVersionHash;
     }
 
     /**
      * @param string $dataVersionHash
-     *
-     * @throws InvalidArgumentException
      */
-    public function setDataVersionHash($dataVersionHash)
+    public function setDataVersionHash(string $dataVersionHash)
     {
-        if (!is_string($dataVersionHash)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($dataVersionHash) . "' for argument 'dataVersionHash'."
-            );
-        }
-
         $this->dataVersionHash = $dataVersionHash;
     }
 }

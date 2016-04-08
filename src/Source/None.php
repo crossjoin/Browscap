@@ -17,7 +17,7 @@ class None implements SourceInterface, SourceFactoryInterface
     /**
      * @inheritdoc
      */
-    public function getReleaseTime()
+    public function getReleaseTime() : int
     {
         return 0;
     }
@@ -25,7 +25,7 @@ class None implements SourceInterface, SourceFactoryInterface
     /**
      * @inheritdoc
      */
-    public function getVersion()
+    public function getVersion() : int
     {
         return 0;
     }
@@ -33,7 +33,7 @@ class None implements SourceInterface, SourceFactoryInterface
     /**
      * @inheritdoc
      */
-    public function getType()
+    public function getType() : int
     {
         return Type::UNKNOWN;
     }
@@ -41,7 +41,7 @@ class None implements SourceInterface, SourceFactoryInterface
     /**
      * @inheritdoc
      */
-    public function getDataSets()
+    public function getDataSets() : \Iterator
     {
         return new \EmptyIterator();
     }

@@ -25,10 +25,9 @@ class SourceFactory
 
     /**
      * @return SourceInterface
-     * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
-    public static function getInstance()
+    public static function getInstance() : SourceInterface
     {
         foreach (static::$sourceClasses as $className) {
             $instance = static::getInstanceByClassName($className);
@@ -68,17 +67,10 @@ class SourceFactory
      * @param string $className
      *
      * @return SourceInterface|null
-     * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
-    protected static function getInstanceByClassName($className)
+    protected static function getInstanceByClassName(string $className)
     {
-        if (!is_string($className)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($className) . "' for argument 'className'."
-            );
-        }
-
         if (class_exists($className)) {
             $interface = '\Crossjoin\Browscap\Source\SourceFactoryInterface';
             $interfaces = class_implements($className);

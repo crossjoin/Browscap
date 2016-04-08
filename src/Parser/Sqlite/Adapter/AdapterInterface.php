@@ -15,31 +15,31 @@ interface AdapterInterface
     /**
      * @return bool
      */
-    public function beginTransaction();
+    public function beginTransaction() : bool;
 
     /**
      * @return bool
      */
-    public function commitTransaction();
+    public function commitTransaction() : bool;
 
     /**
      * @param string $query
      *
      * @return array
      */
-    public function query($query);
+    public function query(string $query) : array;
 
     /**
      * @param string $query
      *
      * @return PreparedStatementInterface
      */
-    public function prepare($query);
+    public function prepare(string $query) : PreparedStatementInterface;
 
     /**
      * @param string $query
      *
      * @return bool
      */
-    public function exec($query);
+    public function exec(string $query) : bool;
 }

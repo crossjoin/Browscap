@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Parser\Sqlite;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\ParserConditionNotSatisfiedException;
 use Crossjoin\Browscap\Exception\ParserRuntimeException;
 use Crossjoin\Browscap\Exception\UnexpectedValueException;
@@ -58,29 +57,21 @@ class Reader implements ReaderInterface
      *
      * @param string $dataDirectory
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      */
-    public function __construct($dataDirectory)
+    public function __construct(string $dataDirectory)
     {
-        if (!is_string($dataDirectory)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($dataDirectory) . "' for argument 'dataDirectory'."
-            );
-        }
-
         $this->setDataDirectory($dataDirectory);
     }
 
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    protected function getAdapter()
+    protected function getAdapter() : AdapterInterface
     {
         if ($this->adapter === null) {
             $databaseFile = $this->getDatabasePath();
@@ -94,10 +85,9 @@ class Reader implements ReaderInterface
     /**
      * @return string
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      */
-    protected function getDatabasePath()
+    protected function getDatabasePath() : string
     {
         $databasePath =  $this->getDataDirectory() . DIRECTORY_SEPARATOR . $this->getDatabaseFileName();
 
@@ -120,10 +110,9 @@ class Reader implements ReaderInterface
     /**
      * @return string
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      */
-    protected function getDatabaseFileName()
+    protected function getDatabaseFileName() : string
     {
         // Get database to use, saved in the link file (as symlinks are not available or only
         // with admin permissions on Windows).
@@ -144,16 +133,9 @@ class Reader implements ReaderInterface
      * @param $file
      *
      * @return bool
-     * @throws InvalidArgumentException
      */
-    protected function isFileReadable($file)
+    protected function isFileReadable(string $file) : bool
     {
-        if (!is_string($file)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($file) . "' for argument 'file'."
-            );
-        }
-        
         return is_readable($file);
     }
 
@@ -168,10 +150,9 @@ class Reader implements ReaderInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
-    public function isUpdateRequired()
+    public function isUpdateRequired() : bool
     {
         try {
             $query = 'SELECT data_hash FROM info LIMIT 1';
@@ -192,12 +173,11 @@ class Reader implements ReaderInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    public function getReleaseTime()
+    public function getReleaseTime() : int
     {
         $query = 'SELECT release_time FROM info LIMIT 1';
 
@@ -212,12 +192,11 @@ class Reader implements ReaderInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    public function getVersion()
+    public function getVersion() : int
     {
         $query = 'SELECT version_id FROM info LIMIT 1';
 
@@ -232,12 +211,11 @@ class Reader implements ReaderInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    public function getType()
+    public function getType() : int
     {
         $query = 'SELECT type_id FROM info LIMIT 1';
 
@@ -252,19 +230,12 @@ class Reader implements ReaderInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    public function getBrowser($userAgent)
+    public function getBrowser(string $userAgent) : array
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-
         // Init variables
         $browserId = $this->getBrowserId($userAgent);
         $browserParentId = $this->getBrowserParentId($userAgent);
@@ -323,19 +294,12 @@ class Reader implements ReaderInterface
      * @param string $userAgent
      *
      * @return int
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    protected function getBrowserId($userAgent)
+    protected function getBrowserId(string $userAgent) : int
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-
         if ($this->browserId === null) {
             $this->findBrowser($userAgent);
         }
@@ -347,19 +311,12 @@ class Reader implements ReaderInterface
      * @param string $userAgent
      *
      * @return int
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    protected function getBrowserParentId($userAgent)
+    protected function getBrowserParentId(string $userAgent) : int
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-
         if ($this->browserParentId === null) {
             $this->findBrowser($userAgent);
         }
@@ -370,19 +327,12 @@ class Reader implements ReaderInterface
     /**
      * @param string $userAgent
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    protected function findBrowser($userAgent)
+    protected function findBrowser(string $userAgent)
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-
         // Check each keyword table for the browser pattern
         $this->findBrowserInKeywordTables($userAgent);
 
@@ -402,19 +352,12 @@ class Reader implements ReaderInterface
 
     /**
      * @param string $userAgent
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    protected function findBrowserInKeywordTables($userAgent)
+    protected function findBrowserInKeywordTables(string $userAgent)
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-        
         $query  = 'SELECT browser_id, browser_pattern_length FROM "search_[keyword]" ';
         $query .= 'WHERE browser_pattern_length >= :length AND :agent GLOB browser_pattern';
 
@@ -458,19 +401,12 @@ class Reader implements ReaderInterface
     /**
      * @param string $userAgent
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    protected function findBrowserInDefaultTable($userAgent)
+    protected function findBrowserInDefaultTable(string $userAgent)
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-        
         // Build query with default table
         $query  = 'SELECT t2.browser_id, t2.browser_parent_id FROM ';
         $query .= '(SELECT MIN(browser_id) AS browser_id FROM search WHERE :agent GLOB browser_pattern) t1 ';
@@ -486,12 +422,11 @@ class Reader implements ReaderInterface
 
     /**
      * @return array
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserRuntimeException
      * @throws UnexpectedValueException
      */
-    protected function getPatternKeywords()
+    protected function getPatternKeywords() : array
     {
         if ($this->browserPatternKeywords === null) {
             $this->browserPatternKeywords = [];
@@ -509,7 +444,7 @@ class Reader implements ReaderInterface
      *
      * @return array
      */
-    protected function sortProperties(array $properties)
+    protected function sortProperties(array $properties) : array
     {
         ksort($properties);
 

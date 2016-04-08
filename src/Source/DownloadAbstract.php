@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Crossjoin\Browscap\Source;
 
 use Crossjoin\Browscap\Browscap;
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\SourceConditionNotSatisfiedException;
 use Crossjoin\Browscap\Exception\SourceUnavailableException;
 use GuzzleHttp\Client;
@@ -43,17 +42,10 @@ abstract class DownloadAbstract
      * @param string $sourceUri
      * @param array $clientOptions
      *
-     * @throws InvalidArgumentException
      * @throws SourceConditionNotSatisfiedException
      */
-    public function __construct($sourceUri, array $clientOptions = [])
+    public function __construct(string $sourceUri, array $clientOptions = [])
     {
-        if (!is_string($sourceUri)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($sourceUri) . "' for argument 'sourceUri'."
-            );
-        }
-        
         // Set user agent
         if (!array_key_exists('headers', $clientOptions)) {
             $clientOptions['headers'] = [];
@@ -67,7 +59,7 @@ abstract class DownloadAbstract
     /**
      * @return Client
      */
-    public function getClient()
+    public function getClient() : Client
     {
         return $this->client;
     }
@@ -83,7 +75,7 @@ abstract class DownloadAbstract
     /**
      * @return string
      */
-    public function getSourceUri()
+    public function getSourceUri() : string
     {
         return $this->sourceUri;
     }
@@ -92,16 +84,9 @@ abstract class DownloadAbstract
      * @param string $sourceUri
      *
      * @return DownloadAbstract
-     * @throws InvalidArgumentException
      */
-    protected function setSourceUri($sourceUri)
+    protected function setSourceUri(string $sourceUri) : DownloadAbstract
     {
-        if (!is_string($sourceUri)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($sourceUri) . "' for argument 'sourceUri'."
-            );
-        }
-
         $this->sourceUri = $sourceUri;
 
         return $this;
@@ -125,7 +110,7 @@ abstract class DownloadAbstract
      * @throws SourceUnavailableException
      * @throws \RuntimeException
      */
-    public function getContent()
+    public function getContent() : \Generator
     {
         $stream = $this->loadContent($this->getSourceUri());
 
@@ -144,7 +129,7 @@ abstract class DownloadAbstract
      * @return StreamInterface
      * @throws SourceUnavailableException
      */
-    protected function loadContent($uri)
+    protected function loadContent($uri) : StreamInterface
     {
         try {
             $response = $this->getClient()->request('GET', $uri);

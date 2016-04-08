@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Source\Ini;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\ParserRuntimeException;
 use Crossjoin\Browscap\Exception\SourceUnavailableException;
 use Crossjoin\Browscap\Source\DataSet;
@@ -22,7 +21,7 @@ trait DataSetsFromContentTrait
      *
      * @return \Generator
      */
-    public function getContent()
+    public function getContent() : \Generator
     {
         yield '';
     }
@@ -30,11 +29,10 @@ trait DataSetsFromContentTrait
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      * @throws SourceUnavailableException
      */
-    public function getDataSets()
+    public function getDataSets() : \Iterator
     {
         $unprocessedBytes = '';
         foreach ($this->getContent() as $bytes) {
@@ -60,17 +58,10 @@ trait DataSetsFromContentTrait
      * @param string $data
      *
      * @return DataSet
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      */
-    protected function getDataSetFromString($data)
+    protected function getDataSetFromString(string $data) : DataSet
     {
-        if (!is_string($data)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($data) . "' for argument 'data'."
-            );
-        }
-
         if (strpos($data, "\n") === false) {
             throw new ParserRuntimeException('The data could not be parsed (no pattern found).', 1459589758);
         }

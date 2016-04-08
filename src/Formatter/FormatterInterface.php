@@ -20,7 +20,7 @@ interface FormatterInterface
      *
      * @return PropertyFilterInterface
      */
-    public function getPropertyFilter();
+    public function getPropertyFilter() : PropertyFilterInterface;
 
     /**
      * Filters the properties when applying the format, so filtered properties are

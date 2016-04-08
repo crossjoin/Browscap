@@ -17,7 +17,7 @@ class PdoUnavailable extends Pdo
     /**
      * @return bool
      */
-    protected function checkConditions()
+    protected function checkConditions() : bool
     {
         return false;
     }

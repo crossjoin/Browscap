@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Formatter;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\PropertyFilter\PropertyFilterTrait;
 
 /**
@@ -37,41 +36,25 @@ class Formatter implements FormatterInterface
      * Formatter constructor.
      *
      * @param int $options
-     *
-     * @throws InvalidArgumentException
      */
-    public function __construct($options = 0)
+    public function __construct(int $options = 0)
     {
-        if (!is_int($options)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($options) . "' for argument 'options'."
-            );
-        }
-
         $this->setOptions($options);
     }
 
     /**
      * @return int
      */
-    protected function getOptions()
+    protected function getOptions() : int
     {
         return $this->options;
     }
 
     /**
      * @param int $options
-     *
-     * @throws InvalidArgumentException
      */
-    protected function setOptions($options)
+    protected function setOptions(int $options)
     {
-        if (!is_int($options)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($options) . "' for argument 'options'."
-            );
-        }
-
         $this->options = $options;
     }
 
@@ -79,7 +62,6 @@ class Formatter implements FormatterInterface
      * @inheritdoc
      *
      * @return array|\stdClass
-     * @throws InvalidArgumentException
      */
     public function format(array $browscapData)
     {
@@ -105,16 +87,9 @@ class Formatter implements FormatterInterface
      * @param string $key
      *
      * @return string
-     * @throws InvalidArgumentException
      */
-    protected function modifyKey($key)
+    protected function modifyKey(string $key)
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($key) . "' for argument 'key'."
-            );
-        }
-
         $newKey = $key;
         if (($this->getOptions() & self::KEY_LOWER) > 0) {
             $newKey = strtolower($key);
@@ -130,16 +105,9 @@ class Formatter implements FormatterInterface
      * @param string $value
      *
      * @return mixed
-     * @throws InvalidArgumentException
      */
-    protected function modifyValue($key, $value)
+    protected function modifyValue(string $key, string $value)
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($key) . "' for argument 'key'."
-            );
-        }
-        
         $newValue = $value;
         if (($this->getOptions() & self::VALUE_TYPED) > 0) {
             if ($this->hasBooleanValue($key)) {
@@ -174,16 +142,9 @@ class Formatter implements FormatterInterface
      * @param string $key
      *
      * @return bool
-     * @throws InvalidArgumentException
      */
-    protected function hasBooleanValue($key)
+    protected function hasBooleanValue(string $key) : bool
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($key) . "' for argument 'key'."
-            );
-        }
-
         return in_array(strtolower($key), [
             'activexcontrols',
             'alpha',
@@ -213,16 +174,9 @@ class Formatter implements FormatterInterface
      * @param string $key
      *
      * @return bool
-     * @throws InvalidArgumentException
      */
-    protected function hasIntegerValue($key)
+    protected function hasIntegerValue(string $key) : bool
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($key) . "' for argument 'key'."
-            );
-        }
-        
         // Notes:
         // - "aolversion" is only contained in the default properties and never set
         // - "cssversion" is only set as integers in the browscap data, so version 2.1 should be returned as 2
@@ -240,16 +194,9 @@ class Formatter implements FormatterInterface
      * @param string $key
      *
      * @return bool
-     * @throws InvalidArgumentException
      */
-    protected function hasFloatValue($key)
+    protected function hasFloatValue(string $key) : bool
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($key) . "' for argument 'key'."
-            );
-        }
-        
         // Notes:
         // - "platform_version" is a float in most cases, but can also be "ME"
         // - "renderingengine_version" is a float in most cases, but also a version string like "1.9.2"

@@ -17,5 +17,5 @@ interface PreparedStatementInterface
      *
      * @return array
      */
-    public function execute(array $params = []);
+    public function execute(array $params = []) : array;
 }

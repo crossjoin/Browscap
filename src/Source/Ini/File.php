@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Source\Ini;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\ParserRuntimeException;
 use Crossjoin\Browscap\Exception\SourceUnavailableException;
 use Crossjoin\Browscap\Source\FileAbstract;
@@ -42,11 +41,10 @@ class File extends FileAbstract implements SourceInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      * @throws SourceUnavailableException
      */
-    public function getReleaseTime()
+    public function getReleaseTime() : int
     {
         if ($this->releaseTime === null) {
             $this->extractHeaderData();
@@ -58,11 +56,10 @@ class File extends FileAbstract implements SourceInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      * @throws SourceUnavailableException
      */
-    public function getVersion()
+    public function getVersion() : int
     {
         if ($this->version === null) {
             $this->extractHeaderData();
@@ -74,11 +71,10 @@ class File extends FileAbstract implements SourceInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      * @throws SourceUnavailableException
      */
-    public function getType()
+    public function getType() : int
     {
         if ($this->type === null) {
             $this->extractHeaderData();
@@ -91,7 +87,6 @@ class File extends FileAbstract implements SourceInterface
      * Extracts the header data from the file. This is typically the first block in the file
      * ofter some lines of comments, with a special section name (defined in self::HEADER_PATTERN).
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      * @throws SourceUnavailableException
      */
@@ -120,7 +115,7 @@ class File extends FileAbstract implements SourceInterface
      *
      * @inheritdoc
      */
-    public function getContent()
+    public function getContent() : \Generator
     {
         return parent::getContent();
     }

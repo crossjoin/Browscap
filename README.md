@@ -30,12 +30,13 @@ You can also switch the type of data set to use:
 versions.
 
 ## Requirements
-- PHP >= 5.6 (support for older versions see below)
+- PHP 7.x (support for older versions see below)
 - The 'pdo_sqlite' or 'sqlite3' extension (please not that this is not checked on composer install/update,
 because only one of these extension is required and composer doesn't support this).
 - For updates via download: cURL extension, `allow_url_fopen` enabled in php.ini (for more details see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/))
 
 ### Releases for older PHP Versions
+- For PHP 5.6.x please use [Crossjoin\Browscap 2.x](https://github.com/crossjoin/Browscap/tree/2.x) (coming soon!)
 - For older PHP versions see [Crossjoin\Browscap 1.x](https://github.com/crossjoin/Browscap/tree/1.x).)
 
 ## Package installation

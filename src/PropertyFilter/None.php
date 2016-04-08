@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\PropertyFilter;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
-
 /**
  * Class None
  *
@@ -16,24 +14,16 @@ class None implements PropertyFilterInterface
 {
     /**
      * @inheritdoc
-     *
-     * @throws InvalidArgumentException
      */
-    public function isFiltered($property)
+    public function isFiltered(string $property) : bool
     {
-        if (!is_string($property)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($property) . "' for argument 'property'."
-            );
-        }
-        
         return false;
     }
 
     /**
      * @inheritdoc
      */
-    public function getProperties()
+    public function getProperties() : array
     {
         return [];
     }

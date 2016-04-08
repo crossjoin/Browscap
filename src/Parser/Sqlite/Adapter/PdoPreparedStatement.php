@@ -30,7 +30,7 @@ class PdoPreparedStatement implements PreparedStatementInterface
     /**
      * @return \PDOStatement
      */
-    protected function getStatement()
+    protected function getStatement() : \PDOStatement
     {
         return $this->statement;
     }
@@ -48,7 +48,7 @@ class PdoPreparedStatement implements PreparedStatementInterface
      *
      * @return array
      */
-    public function execute(array $params = [])
+    public function execute(array $params = []) : array
     {
         foreach ($params as $paramName => $paramValue) {
             $type = is_int($paramValue) ? \PDO::PARAM_INT : \PDO::PARAM_STR;

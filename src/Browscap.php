@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\ParserConfigurationException;
 use Crossjoin\Browscap\Exception\ParserRuntimeException;
 use Crossjoin\Browscap\Formatter\FormatterInterface;
@@ -20,7 +19,7 @@ use Crossjoin\Browscap\Parser\Sqlite\Parser;
  */
 class Browscap
 {
-    const VERSION = '2.0.0';
+    const VERSION = '3.0.0';
 
     /**
      * @var ParserInterface
@@ -42,10 +41,9 @@ class Browscap
 
     /**
      * @return ParserInterface
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      */
-    public function getParser()
+    public function getParser() : ParserInterface
     {
         if ($this->parser === null) {
             $this->setParser(new Parser());
@@ -59,7 +57,7 @@ class Browscap
      *
      * @return Browscap
      */
-    public function setParser(ParserInterface $parser)
+    public function setParser(ParserInterface $parser) : Browscap
     {
         $this->parser = $parser;
 
@@ -68,9 +66,8 @@ class Browscap
 
     /**
      * @return FormatterInterface
-     * @throws InvalidArgumentException
      */
-    public function getFormatter()
+    public function getFormatter() : FormatterInterface
     {
         if ($this->formatter === null) {
             $this->setFormatter(new PhpGetBrowser());
@@ -84,7 +81,7 @@ class Browscap
      *
      * @return Browscap
      */
-    public function setFormatter(FormatterInterface $formatter)
+    public function setFormatter(FormatterInterface $formatter) : Browscap
     {
         $this->formatter = $formatter;
 
@@ -94,7 +91,7 @@ class Browscap
     /**
      * @return int
      */
-    public function getAutoUpdateProbability()
+    public function getAutoUpdateProbability() : int
     {
         return $this->autoUpdateProbability;
     }
@@ -103,16 +100,9 @@ class Browscap
      * @param int $autoUpdateProbability
      *
      * @return Browscap
-     * @throws InvalidArgumentException
      */
-    public function setAutoUpdateProbability($autoUpdateProbability)
+    public function setAutoUpdateProbability(int $autoUpdateProbability) : Browscap
     {
-        if (!is_int($autoUpdateProbability)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($autoUpdateProbability) . "' for argument 'autoUpdateProbability'."
-            );
-        }
-
         $this->autoUpdateProbability = $autoUpdateProbability;
 
         return $this;
@@ -122,24 +112,17 @@ class Browscap
      * @param string|null $userAgent
      *
      * @return mixed
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function getBrowser($userAgent = null)
+    public function getBrowser(string $userAgent = null)
     {
-        if (!is_string($userAgent) && $userAgent !== null) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-        
         // Check if an automatic update is required
         $this->autoUpdate();
 
         // If no user agent is set, try to get it from the HTTP headers
         if ($userAgent === null) {
-            $userAgent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : '';
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         }
 
         // Get rwa Browscap data and return a formatted version, using the set Formatter
@@ -149,11 +132,10 @@ class Browscap
 
     /**
      * @return Browscap
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    protected function autoUpdate()
+    protected function autoUpdate() : Browscap
     {
         $updateProbability = $this->getAutoUpdateProbability();
         if ($updateProbability >= random_int(1, 100) || $this->getParser()->getReader()->isUpdateRequired()) {
@@ -171,18 +153,11 @@ class Browscap
      * @param bool $forceUpdate
      *
      * @return bool
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function update($forceUpdate = false)
+    public function update(bool $forceUpdate = false) : bool
     {
-        if (!is_bool($forceUpdate)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($forceUpdate) . "' for argument 'forceUpdate'."
-            );
-        }
-        
         $parser = $this->getParser();
 
         // Check if an update is required, either because it's forced, or the source is newer
@@ -222,23 +197,11 @@ class Browscap
      * @param bool $returnArray
      *
      * @return mixed
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function __invoke($userAgent, $returnArray = false)
+    public function __invoke(string $userAgent, bool $returnArray = false)
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-        if (!is_bool($returnArray)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($returnArray) . "' for argument 'returnArray'."
-            );
-        }
-
         $this->setFormatter(new PhpGetBrowser($returnArray));
         return $this->getBrowser($userAgent);
     }

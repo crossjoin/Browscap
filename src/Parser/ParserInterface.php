@@ -18,7 +18,7 @@ interface ParserInterface
     /**
      * @return SourceInterface
      */
-    public function getSource();
+    public function getSource() : SourceInterface;
 
     /**
      * @param SourceInterface $source
@@ -31,7 +31,7 @@ interface ParserInterface
      *
      * @return PropertyFilterInterface
      */
-    public function getPropertyFilter();
+    public function getPropertyFilter() : PropertyFilterInterface;
 
     /**
      * Filters the properties when writing/reading the parser data. The filtered properties
@@ -59,10 +59,10 @@ interface ParserInterface
      *
      * @return ReaderInterface
      */
-    public function getReader($reInitiate = false);
+    public function getReader($reInitiate = false) : ReaderInterface;
 
     /**
      * @return WriterInterface
      */
-    public function getWriter();
+    public function getWriter() : WriterInterface;
 }

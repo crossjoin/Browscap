@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Parser\Sqlite;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
-
 /**
  * Trait DataDirectoryTrait
  *
@@ -22,24 +20,16 @@ trait DataDirectoryTrait
     /**
      * @return string
      */
-    protected function getDataDirectory()
+    protected function getDataDirectory() : string
     {
         return $this->dataDirectory;
     }
 
     /**
      * @param string $dataDirectory
-     *
-     * @throws InvalidArgumentException
      */
-    protected function setDataDirectory($dataDirectory)
+    protected function setDataDirectory(string $dataDirectory)
     {
-        if (!is_string($dataDirectory)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($dataDirectory) . "' for argument 'dataDirectory'."
-            );
-        }
-
         $this->dataDirectory = $dataDirectory;
     }
 }

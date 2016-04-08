@@ -15,5 +15,5 @@ interface WriterInterface
     /**
      * @return WriterInterface
      */
-    public function generate();
+    public function generate() : WriterInterface;
 }

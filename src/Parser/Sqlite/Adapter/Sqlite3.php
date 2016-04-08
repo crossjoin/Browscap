@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Parser\Sqlite\Adapter;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\ParserConditionNotSatisfiedException;
 use Crossjoin\Browscap\Exception\ParserConfigurationException;
 use Crossjoin\Browscap\Exception\ParserRuntimeException;
@@ -27,17 +26,10 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
      *
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      */
-    public function __construct($fileName)
+    public function __construct(string $fileName)
     {
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         if (!$this->checkConditions()) {
             throw new ParserConditionNotSatisfiedException('Sqlite3 extension missing.');
         }
@@ -48,7 +40,7 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
     /**
      * @return bool
      */
-    protected function checkConditions()
+    protected function checkConditions() : bool
     {
         return class_exists('\SQLite3');
     }
@@ -57,7 +49,7 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
      * @return \SQLite3
      * @throws ParserConfigurationException
      */
-    protected function getConnection()
+    protected function getConnection() : \SQLite3
     {
         if ($this->connection === null) {
             try {
@@ -78,7 +70,7 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function beginTransaction()
+    public function beginTransaction() : bool
     {
         $result = @$this->getConnection()->exec('BEGIN TRANSACTION');
 
@@ -95,7 +87,7 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function commitTransaction()
+    public function commitTransaction() : bool
     {
         $result = @$this->getConnection()->exec('COMMIT TRANSACTION');
 
@@ -109,18 +101,11 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function query($statement)
+    public function query(string $statement) : array
     {
-        if (!is_string($statement)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($statement) . "' for argument 'statement'."
-            );
-        }
-
         $result = @$this->getConnection()->query($statement);
 
         if ($result === false) {
@@ -138,18 +123,11 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function prepare($statement)
+    public function prepare(string $statement) : PreparedStatementInterface
     {
-        if (!is_string($statement)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($statement) . "' for argument 'statement'."
-            );
-        }
-        
         $preparedStatement = @$this->getConnection()->prepare($statement);
 
         if ($preparedStatement === false) {
@@ -162,18 +140,11 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      */
-    public function exec($statement)
+    public function exec(string $statement) : bool
     {
-        if (!is_string($statement)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($statement) . "' for argument 'statement'."
-            );
-        }
-        
         $result = @$this->getConnection()->exec($statement);
 
         if ($result === false) {

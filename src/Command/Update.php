@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Crossjoin\Browscap\Command;
 
 use Crossjoin\Browscap\Browscap;
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\ParserConfigurationException;
 use Crossjoin\Browscap\Exception\ParserRuntimeException;
 use Crossjoin\Browscap\Exception\SourceConditionNotSatisfiedException;
@@ -107,7 +106,6 @@ class Update extends Command
      * @param OutputInterface $output
      *
      * @return int|null|void
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      * @throws ParserRuntimeException
      * @throws SourceConditionNotSatisfiedException

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Source\Ini;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\SourceConditionNotSatisfiedException;
 use Crossjoin\Browscap\Exception\SourceUnavailableException;
 use Crossjoin\Browscap\Source\SourceFactoryInterface;
@@ -20,7 +19,6 @@ class PhpSetting extends File implements SourceFactoryInterface
     /**
      * PhpBrowscapIni constructor.
      *
-     * @throws InvalidArgumentException
      * @throws SourceConditionNotSatisfiedException
      * @throws SourceUnavailableException
      */
@@ -40,7 +38,7 @@ class PhpSetting extends File implements SourceFactoryInterface
     /**
      * @return string
      */
-    protected function getIniPath()
+    protected function getIniPath() : string
     {
         return (string)ini_get('browscap');
     }

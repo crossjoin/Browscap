@@ -17,14 +17,14 @@ interface SourceInterface
      *
      * @return int
      */
-    public function getReleaseTime();
+    public function getReleaseTime() : int;
 
     /**
      * Gets the source Browscap version number (or 0 if not available)
      *
      * @return int
      */
-    public function getVersion();
+    public function getVersion() : int;
 
     /**
      * Gets the source Browscap type
@@ -37,12 +37,12 @@ interface SourceInterface
      *
      * @return int
      */
-    public function getType();
+    public function getType() : int;
 
     /**
      * Gets the browscap source DataSet instances as Generator
      *
      * @return \Iterator|\Generator|DataSet
      */
-    public function getDataSets();
+    public function getDataSets() : \Iterator;
 }

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Parser\Sqlite\Adapter;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
-
 /**
  * Class AdapterAbstract
  *
@@ -23,41 +21,25 @@ abstract class AdapterAbstract
      * PdoSqlite constructor.
      *
      * @param string $fileName
-     *
-     * @throws InvalidArgumentException
      */
-    public function __construct($fileName)
+    public function __construct(string $fileName)
     {
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         $this->setFileName($fileName);
     }
 
     /**
      * @return string
      */
-    protected function getFileName()
+    protected function getFileName() : string
     {
         return $this->fileName;
     }
 
     /**
      * @param string $fileName
-     *
-     * @throws InvalidArgumentException
      */
-    protected function setFileName($fileName)
+    protected function setFileName(string $fileName)
     {
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         $this->fileName = $fileName;
     }
 }

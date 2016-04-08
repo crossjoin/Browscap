@@ -18,21 +18,21 @@ interface ReaderInterface
      *
      * @return bool
      */
-    public function isUpdateRequired();
+    public function isUpdateRequired() : bool;
 
     /**
      * Gets the current Browscap release time stamp (or 0 if not available)
      *
      * @return int
      */
-    public function getReleaseTime();
+    public function getReleaseTime() : int;
 
     /**
      * Gets the current Browscap version number (or 0 if not available)
      *
      * @return int
      */
-    public function getVersion();
+    public function getVersion() : int;
 
     /**
      * Get the current Browscap type
@@ -44,12 +44,12 @@ interface ReaderInterface
      *
      * @return int
      */
-    public function getType();
+    public function getType() : int;
 
     /**
      * @param string $userAgent
      *
      * @return array
      */
-    public function getBrowser($userAgent);
+    public function getBrowser(string $userAgent) : array;
 }

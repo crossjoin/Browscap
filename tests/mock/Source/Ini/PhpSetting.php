@@ -26,7 +26,7 @@ class PhpSetting extends \Crossjoin\Browscap\Source\Ini\PhpSetting
     /**
      * @return string
      */
-    protected function getIniPath()
+    protected function getIniPath() : string
     {
         return $this->browscapSetting;
     }

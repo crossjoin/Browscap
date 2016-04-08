@@ -28,18 +28,11 @@ class AdapterFactory
      * @param string $fileName
      *
      * @return AdapterInterface
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws UnexpectedValueException
      */
-    public static function getInstance($fileName)
+    public static function getInstance(string $fileName) : AdapterInterface
     {
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         foreach (static::$adapterClasses as $className) {
             $instance = static::getInstanceByClassName($className, $fileName);
             if ($instance !== null) {
@@ -81,22 +74,10 @@ class AdapterFactory
      * @param string $fileName
      *
      * @return AdapterInterface|null
-     * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
-    protected static function getInstanceByClassName($className, $fileName)
+    protected static function getInstanceByClassName(string $className, string $fileName)
     {
-        if (!is_string($className)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($className) . "' for argument 'className'."
-            );
-        }
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         if (class_exists($className)) {
             $interface = '\Crossjoin\Browscap\Parser\Sqlite\Adapter\AdapterFactoryInterface';
             $interfaces = class_implements($className);

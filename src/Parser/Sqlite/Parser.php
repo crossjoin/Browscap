@@ -61,17 +61,10 @@ class Parser implements ParserInterface
      *
      * @param string|null $dataDirectory
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      */
-    public function __construct($dataDirectory = null)
+    public function __construct(string $dataDirectory = null)
     {
-        if (!is_string($dataDirectory) && $dataDirectory !== null) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($dataDirectory) . "' for argument 'dataDirectory'."
-            );
-        }
-
         if ($dataDirectory !== null) {
             $this->setDataDirectory($dataDirectory);
         }
@@ -82,7 +75,7 @@ class Parser implements ParserInterface
      * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
-    public function getSource()
+    public function getSource() : SourceInterface
     {
         if ($this->source === null) {
             $this->setSource(SourceFactory::getInstance());
@@ -104,7 +97,6 @@ class Parser implements ParserInterface
     /**
      * @return string
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      */
     public function getDataDirectory()
@@ -119,17 +111,10 @@ class Parser implements ParserInterface
     /**
      * @param string $directory
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      */
-    public function setDataDirectory($directory)
+    public function setDataDirectory(string $directory)
     {
-        if (!is_string($directory)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($directory) . "' for argument 'directory'."
-            );
-        }
-
         $directory = rtrim(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $directory), DIRECTORY_SEPARATOR);
 
         // Check main data directory
@@ -146,7 +131,6 @@ class Parser implements ParserInterface
      * @param $directory
      * @param bool $create
      *
-     * @throws InvalidArgumentException
      * @throws ParserConfigurationException
      */
     protected function checkDirectory($directory, $create = false)
@@ -171,16 +155,9 @@ class Parser implements ParserInterface
      * @param string $directory
      *
      * @return bool
-     * @throws InvalidArgumentException
      */
-    protected function isDirectoryReadable($directory)
+    protected function isDirectoryReadable(string $directory) : bool
     {
-        if (!is_string($directory)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($directory) . "' for argument 'directory'."
-            );
-        }
-
         return is_readable($directory);
     }
 
@@ -188,16 +165,9 @@ class Parser implements ParserInterface
      * @param string $directory
      *
      * @return bool
-     * @throws InvalidArgumentException
      */
-    protected function isDirectoryWritable($directory)
+    protected function isDirectoryWritable(string $directory) : bool
     {
-        if (!is_string($directory)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($directory) . "' for argument 'directory'."
-            );
-        }
-
         return is_writable($directory);
     }
 
@@ -246,11 +216,10 @@ class Parser implements ParserInterface
      *
      * @return Reader
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws ParserConfigurationException
      */
-    public function getReader($reInitiate = false)
+    public function getReader($reInitiate = false) : ReaderInterface
     {
         if ($reInitiate === true || $this->reader === null) {
             $this->reader = new Reader($this->getDataDirectory());
@@ -271,7 +240,7 @@ class Parser implements ParserInterface
      * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
-    public function getWriter()
+    public function getWriter() : WriterInterface
     {
         if ($this->writer === null) {
             $this->writer = new Writer($this->getDataDirectory(), $this->getSource());

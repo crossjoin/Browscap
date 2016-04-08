@@ -20,12 +20,12 @@ interface PropertyFilterInterface
      *
      * @return bool
      */
-    public function isFiltered($property);
+    public function isFiltered(string $property) : bool;
 
     /**
      * Returns an indexed array with all property names.
      *
      * @return array
      */
-    public function getProperties();
+    public function getProperties() : array;
 }

@@ -34,7 +34,7 @@ class DataSetsFromContent
     /**
      * @return \Generator
      */
-    public function getContent()
+    public function getContent() : \Generator
     {
         yield $this->content;
     }

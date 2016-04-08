@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Source;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
-
 /**
  * Class DataSet
  *
@@ -28,48 +26,32 @@ class DataSet
      * DataSet constructor.
      *
      * @param string $pattern
-     *
-     * @throws InvalidArgumentException
      */
-    public function __construct($pattern)
+    public function __construct(string $pattern)
     {
-        if (!is_string($pattern)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($pattern) . "' for argument 'pattern'."
-            );
-        }
-
         $this->setPattern($pattern);
     }
 
     /**
      * @return string
      */
-    public function getPattern()
+    public function getPattern() : string
     {
         return $this->pattern;
     }
 
     /**
      * @param string $pattern
-     *
-     * @throws InvalidArgumentException
      */
-    protected function setPattern($pattern)
+    protected function setPattern(string $pattern)
     {
-        if (!is_string($pattern)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($pattern) . "' for argument 'pattern'."
-            );
-        }
-
         $this->pattern = $pattern;
     }
 
     /**
      * @return array
      */
-    public function getProperties()
+    public function getProperties() : array
     {
         return $this->properties;
     }
@@ -78,9 +60,8 @@ class DataSet
      * @param array $properties
      *
      * @return DataSet
-     * @throws InvalidArgumentException
      */
-    public function setProperties(array $properties)
+    public function setProperties(array $properties) : DataSet
     {
         $this->properties = [];
 
@@ -96,21 +77,9 @@ class DataSet
      * @param string $value
      *
      * @return DataSet
-     * @throws InvalidArgumentException
      */
-    public function addProperty($key, $value)
+    public function addProperty(string $key, string $value) : DataSet
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($key) . "' for argument 'key'."
-            );
-        }
-        if (!is_string($value)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($value) . "' for argument 'value'."
-            );
-        }
-
         $this->properties[$key] = $value;
 
         return $this;

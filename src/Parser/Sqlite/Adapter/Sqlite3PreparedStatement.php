@@ -30,7 +30,7 @@ class Sqlite3PreparedStatement implements PreparedStatementInterface
     /**
      * @return \SQLite3Stmt
      */
-    protected function getStatement()
+    protected function getStatement() : \SQLite3Stmt
     {
         return $this->statement;
     }
@@ -48,7 +48,7 @@ class Sqlite3PreparedStatement implements PreparedStatementInterface
      *
      * @return array
      */
-    public function execute(array $params = [])
+    public function execute(array $params = []) : array
     {
         foreach ($params as $paramName => $paramValue) {
             $type = is_int($paramValue) ? \PDO::PARAM_INT : \PDO::PARAM_STR;

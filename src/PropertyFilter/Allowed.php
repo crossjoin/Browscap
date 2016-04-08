@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\PropertyFilter;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
-
 /**
  * Class Allowed
  *
@@ -23,8 +21,6 @@ class Allowed implements PropertyFilterInterface
      * Allowed constructor.
      *
      * @param array $properties
-     *
-     * @throws InvalidArgumentException
      */
     public function __construct(array $properties = [])
     {
@@ -34,7 +30,7 @@ class Allowed implements PropertyFilterInterface
     /**
      * @return array
      */
-    public function getProperties()
+    public function getProperties() : array
     {
         return $this->properties;
     }
@@ -43,9 +39,8 @@ class Allowed implements PropertyFilterInterface
      * @param array $properties
      *
      * @return Allowed
-     * @throws InvalidArgumentException
      */
-    public function setProperties(array $properties)
+    public function setProperties(array $properties) : Allowed
     {
         $this->properties = [];
 
@@ -60,16 +55,9 @@ class Allowed implements PropertyFilterInterface
      * @param string $property
      *
      * @return Allowed
-     * @throws InvalidArgumentException
      */
-    public function addProperty($property)
+    public function addProperty(string $property) : Allowed
     {
-        if (!is_string($property)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($property) . "' for argument 'property'."
-            );
-        }
-
         $property = strtolower($property);
         if (!in_array($property, $this->properties, true)) {
             $this->properties[] = $property;
@@ -80,17 +68,9 @@ class Allowed implements PropertyFilterInterface
 
     /**
      * @inheritdoc
-     *
-     * @throws InvalidArgumentException
      */
-    public function isFiltered($property)
+    public function isFiltered(string $property) : bool
     {
-        if (!is_string($property)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($property) . "' for argument 'property'."
-            );
-        }
-
         return !in_array(strtolower($property), $this->getProperties(), true);
     }
 }

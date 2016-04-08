@@ -17,5 +17,5 @@ interface AdapterFactoryInterface
      *
      * @param string $fileName
      */
-    public function __construct($fileName);
+    public function __construct(string $fileName);
 }

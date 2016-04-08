@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crossjoin\Browscap\Parser\Sqlite;
 
-use Crossjoin\Browscap\Exception\InvalidArgumentException;
 use Crossjoin\Browscap\Exception\ParserConditionNotSatisfiedException;
 use Crossjoin\Browscap\Exception\ParserRuntimeException;
 use Crossjoin\Browscap\Exception\UnexpectedValueException;
@@ -81,17 +80,9 @@ class Writer implements WriterInterface
      *
      * @param string $dataDirectory
      * @param SourceInterface $source
-     *
-     * @throws InvalidArgumentException
      */
-    public function __construct($dataDirectory, SourceInterface $source)
+    public function __construct(string $dataDirectory, SourceInterface $source)
     {
-        if (!is_string($dataDirectory)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($dataDirectory) . "' for argument 'dataDirectory'."
-            );
-        }
-
         $this->setDataDirectory($dataDirectory);
         $this->setSource($source);
     }
@@ -99,7 +90,7 @@ class Writer implements WriterInterface
     /**
      * @return SourceInterface
      */
-    protected function getSource()
+    protected function getSource() : SourceInterface
     {
         return $this->source;
     }
@@ -115,7 +106,7 @@ class Writer implements WriterInterface
     /**
      * @return string
      */
-    protected function getTemporaryFileName()
+    protected function getTemporaryFileName() : string
     {
         if ($this->temporaryFileName === null) {
             $this->temporaryFileName = $this->getDataDirectory() . DIRECTORY_SEPARATOR .
@@ -128,11 +119,10 @@ class Writer implements WriterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserConditionNotSatisfiedException
      * @throws UnexpectedValueException
      */
-    protected function getAdapter()
+    protected function getAdapter() : AdapterInterface
     {
         if ($this->adapter === null) {
             $databaseFile = $this->getTemporaryFileName();
@@ -154,10 +144,9 @@ class Writer implements WriterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      */
-    public function generate()
+    public function generate() : WriterInterface
     {
         // Disable time limit (generation is done within a few seconds, but if data have to be
         // downloaded it can take some more time)
@@ -234,16 +223,9 @@ class Writer implements WriterInterface
      * @param string $tableName
      *
      * @return integer
-     * @throws InvalidArgumentException
      */
-    public function getNextId($tableName)
+    public function getNextId(string $tableName)
     {
-        if (!is_string($tableName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($tableName) . "' for argument 'tableName'."
-            );
-        }
-
         if (!array_key_exists($tableName, $this->primaryIds)) {
             $this->primaryIds[$tableName] = 1;
         } else {
@@ -256,7 +238,6 @@ class Writer implements WriterInterface
     /**
      * @param DataSet $dataSet
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      */
     protected function processDataSet(DataSet $dataSet)
@@ -289,7 +270,6 @@ class Writer implements WriterInterface
     /**
      * @param DataSet $dataSet
      *
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      */
     protected function processBrowserData(DataSet $dataSet)
@@ -353,22 +333,9 @@ class Writer implements WriterInterface
     /**
      * @param string $pattern
      * @param int $browserId
-     *
-     * @throws InvalidArgumentException
      */
-    protected function addParentPattern($pattern, $browserId)
+    protected function addParentPattern(string $pattern, int $browserId)
     {
-        if (!is_string($pattern)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($pattern) . "' for argument 'pattern'."
-            );
-        }
-        if (!is_int($browserId)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($browserId) . "' for argument 'browserId'."
-            );
-        }
-
         $this->parentPatterns[$pattern] = $browserId;
     }
 
@@ -376,7 +343,6 @@ class Writer implements WriterInterface
      * @param array $properties
      *
      * @return int|null
-     * @throws InvalidArgumentException
      * @throws ParserRuntimeException
      */
     protected function getParentPatternId(array &$properties)
@@ -399,7 +365,6 @@ class Writer implements WriterInterface
      * @param array $properties
      *
      * @return array
-     * @throws InvalidArgumentException
      */
     protected function getIdsForProperties(array $properties)
     {
@@ -440,17 +405,9 @@ class Writer implements WriterInterface
 
     /**
      * @param string $pattern
-     *
-     * @throws InvalidArgumentException
      */
-    protected function extractKeywordsFromPattern($pattern)
+    protected function extractKeywordsFromPattern(string $pattern)
     {
-        if (!is_string($pattern)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($pattern) . "' for argument 'pattern'."
-            );
-        }
-
         // Filter the keywords from the pattern (all strings containing of the characters a-z,
         // with at least 4 characters) and count them to check for the most important keywords
         // later.
@@ -570,7 +527,7 @@ class Writer implements WriterInterface
     /**
      * @return string
      */
-    protected function getLinkPath()
+    protected function getLinkPath() : string
     {
         return $this->getDataDirectory() . DIRECTORY_SEPARATOR . Parser::LINK_FILENAME;
     }
