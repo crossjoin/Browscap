@@ -84,7 +84,9 @@ class AdapterFactory
             if (array_key_exists(ltrim($interface, '\\'), $interfaces)) {
                 try {
                     return new $className($fileName);
-                } catch (BrowscapException $e) {}
+                } catch (BrowscapException $e) {
+                    // Ignore exception, because we just return NULL on failure
+                }
             } else {
                 throw new UnexpectedValueException(
                     "Class '$className' has to implement the interface '$interface'.",
