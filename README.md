@@ -36,7 +36,7 @@ because only one of these extension is required and composer doesn't support thi
 - For updates via download: cURL extension, `allow_url_fopen` enabled in php.ini (for more details see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/))
 
 ### Releases for older PHP Versions
-- For older PHP versions see [Crossjoin\Browscap 1.x](https://github.com/crossjoin/Browscap/tree/1.x).)
+- For older PHP versions see [Crossjoin\Browscap 1.x](https://github.com/crossjoin/Browscap/tree/1.x)
 
 ## Package installation
 Crossjoin\Browscap is provided as a Composer package which can be installed by adding the package to your composer.json 
