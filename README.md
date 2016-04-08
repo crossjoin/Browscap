@@ -37,7 +37,7 @@ because only one of these extension is required and composer doesn't support thi
 
 ### Releases for older PHP Versions
 - For PHP 5.6.x please use [Crossjoin\Browscap 2.x](https://github.com/crossjoin/Browscap/tree/2.x)
-- For older PHP versions see [Crossjoin\Browscap 1.x](https://github.com/crossjoin/Browscap/tree/1.x).)
+- For older PHP versions see [Crossjoin\Browscap 1.x](https://github.com/crossjoin/Browscap/tree/1.x)
 
 ## Package installation
 Crossjoin\Browscap is provided as a Composer package which can be installed by adding the package to your composer.json 
