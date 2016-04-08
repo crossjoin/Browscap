@@ -60,8 +60,8 @@ class Update extends Command
                 'ini-load',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Will download the parser data (of the given type - lite, full, default) for the update. ' .
-                'If no type set, the default type is used.'
+                'Will download the parser data (of the given type - "lite", "full" or "standard") for the update. ' .
+                'If no type set, the "standard" type is used.'
             )
             ->addOption(
                 'ini-file',

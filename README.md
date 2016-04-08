@@ -106,7 +106,7 @@ $forceUpdate = false; // If you do not force an update, it will only be done if 
 $browscap->update($forceUpdate);
 ```
 
-or via the command-line interface (normally you will find 'browscap' or 'browscap.php' in composers 'vendor/bin/'):
+or via the command-line interface (normally you will find 'browscap' or 'browscap.bat' in composers 'vendor/bin/'):
 ```
 browscap update [--force]
 ```
@@ -278,6 +278,14 @@ $browscap->getFormatter()->setPropertyFilter($filter);
 $settings = $browscap->getBrowser();
 ```
 
+You can also set filters for the parser when using the command-line interface:
+```
+browscap update --filter-allowed Version,Browser,isMobileDevice
+```
+```
+browscap update --filter-disallowed Version,Browser,isMobileDevice
+```
+
 ## Sources
 
 By default, the current browscap (PHP ini) source is downloaded automatically (`standard` type).
@@ -312,6 +320,12 @@ $browscap->getParser()->setSource($source);
 $settings = $browscap->getBrowser();
 ```
 
+You can also set the source type when using the command-line interface:
+```
+browscap update --ini-load full
+```
+
+
 ### Use the source file defined in the `browscap` PHP directive
 
 ```php
@@ -331,6 +345,11 @@ $browscap->getParser()->setSource($source);
 $settings = $browscap->getBrowser();
 ```
 
+You can also switch to this source when using the command-line interface:
+```
+browscap update --ini-php
+```
+
 ### Use a custom source file
 
 ```php
@@ -348,6 +367,11 @@ $browscap->getParser()->setSource($source);
 // Get properties...
 // NOTE: New parser sources will trigger an update of the parser data!
 $settings = $browscap->getBrowser();
+```
+
+Setting the source file is also possible when using the command-line interface:
+```
+browscap update --ini-file path/to/browscap.ini
 ```
 
 ## Misc
@@ -373,10 +397,17 @@ $browscap->setParser($parser);
 $settings = $browscap->getBrowser();
 ```
 
+You can also set the data directory when using the command-line interface:
+```
+browscap update --dir path/to/data/directory
+```
+
 ### Client settings for the source download
 
 If you download the source (default), you perhaps want to use a proxy or other settings for
 the client. You can do so by providing the settings for the GuzzleHttp client (see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/)):
+
+This is currently not possible when using the command line.
 
 ```php
 <?php
