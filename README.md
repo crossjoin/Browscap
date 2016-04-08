@@ -44,7 +44,7 @@ file:
 ```php
 {
     "require": {
-        "crossjoin/browscap": "~3.0.0"
+        "crossjoin/browscap": "~2.0.0"
     }
 }
 ```
