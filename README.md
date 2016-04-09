@@ -1,5 +1,11 @@
 # Browscap Parsing Class
 
+[![Author](http://img.shields.io/badge/author-@cziegenberg-blue.svg?style=flat-square)](https://twitter.com/cziegenberg)
+[![Quality Score](https://img.shields.io/scrutinizer/g/crossjoin/Browscap.svg?style=flat-square)](https://scrutinizer-ci.com/g/crossjoin/Browscap)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Packagist Version](https://img.shields.io/packagist/v/crossjoin/Browscap.svg?style=flat-square)](https://packagist.org/packages/crossjoin/Browscap)
+[![Total Downloads](https://img.shields.io/packagist/dt/crossjoin/Browscap.svg?style=flat-square)](https://packagist.org/packages/crossjoin/Browscap)
+
 ## Introduction
 Crossjoin\Browscap allows to check for browser settings based on the user agent string, using the data from
 the [Browser Capabilities Project](browscap.org).
