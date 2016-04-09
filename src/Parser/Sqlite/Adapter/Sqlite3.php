@@ -30,12 +30,6 @@ class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactor
      */
     public function __construct($fileName)
     {
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         if (!$this->checkConditions()) {
             throw new ParserConditionNotSatisfiedException('Sqlite3 extension missing.');
         }

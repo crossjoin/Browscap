@@ -30,12 +30,6 @@ class Pdo extends AdapterAbstract implements AdapterInterface, AdapterFactoryInt
      */
     public function __construct($fileName)
     {
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         if (!$this->checkConditions()) {
             throw new ParserConditionNotSatisfiedException('PDO extension with Sqlite support missing.');
         }

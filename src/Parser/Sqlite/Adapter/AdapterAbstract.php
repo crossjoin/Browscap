@@ -26,12 +26,6 @@ abstract class AdapterAbstract
      */
     public function __construct($fileName)
     {
-        if (!is_string($fileName)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($fileName) . "' for argument 'fileName'."
-            );
-        }
-
         $this->setFileName($fileName);
     }
 
