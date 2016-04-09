@@ -35,7 +35,7 @@ class Parser implements ParserInterface
     const VERSION = '1.0.0';
 
     /**
-     * @var AdapterInterface
+     * @var SourceInterface
      */
     protected $source;
 
