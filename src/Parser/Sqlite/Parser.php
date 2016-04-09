@@ -76,7 +76,7 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @return mixed
+     * @return SourceInterface
      * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
