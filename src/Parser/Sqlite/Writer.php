@@ -464,7 +464,7 @@ class Writer implements WriterInterface
         asort($keywords);
 
         $keywordId = 1;
-        foreach($keywords as $keywordValue => $keywordCount) {
+        foreach ($keywords as $keywordValue => $keywordCount) {
             // Do NOT use "CREATE TABLE ... AS" here, because this would automatically add an extra id column,
             // which requires additional space
             $adapter->exec(
