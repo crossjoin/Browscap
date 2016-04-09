@@ -89,7 +89,7 @@ class Reader implements ReaderInterface
      */
     protected function getDatabasePath() : string
     {
-        $databasePath =  $this->getDataDirectory() . DIRECTORY_SEPARATOR . $this->getDatabaseFileName();
+        $databasePath = $this->getDataDirectory() . DIRECTORY_SEPARATOR . $this->getDatabaseFileName();
 
         if (!$this->isFileReadable($databasePath)) {
             if (!file_exists($databasePath)) {
