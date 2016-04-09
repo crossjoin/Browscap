@@ -154,7 +154,7 @@ class Browscap
     protected function autoUpdate()
     {
         $updateProbability = $this->getAutoUpdateProbability();
-        if ($updateProbability >= random_int(1, 100) || $this->getParser()->getReader()->isUpdateRequired()) {
+        if ($updateProbability >= mt_rand(1, 100) || $this->getParser()->getReader()->isUpdateRequired()) {
             $this->update();
         }
 
