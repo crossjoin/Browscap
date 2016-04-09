@@ -141,7 +141,7 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @param $directory
+     * @param string $directory
      * @param bool $create
      *
      * @throws InvalidArgumentException
