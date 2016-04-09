@@ -71,7 +71,7 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @return mixed
+     * @return SourceInterface
      * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
@@ -128,12 +128,12 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @param $directory
+     * @param string $directory
      * @param bool $create
      *
      * @throws ParserConfigurationException
      */
-    protected function checkDirectory($directory, $create = false)
+    protected function checkDirectory(string $directory, bool $create = false)
     {
         if (!file_exists($directory) &&
             ($create === false || (!@mkdir($directory, 0777, true) && !is_dir($directory)))
