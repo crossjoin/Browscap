@@ -16,12 +16,12 @@ use Crossjoin\Browscap\Exception\ParserRuntimeException;
 class Sqlite3 extends AdapterAbstract implements AdapterInterface, AdapterFactoryInterface
 {
     /**
-     * @var \PDO
+     * @var \SQLite3
      */
     protected $connection;
 
     /**
-     * Pdo constructor.
+     * Sqlite3 constructor.
      *
      * @inheritdoc
      *
