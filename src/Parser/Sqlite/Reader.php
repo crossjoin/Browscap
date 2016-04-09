@@ -328,12 +328,6 @@ class Reader implements ReaderInterface
      */
     protected function getBrowserId($userAgent)
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-
         if ($this->browserId === null) {
             $this->findBrowser($userAgent);
         }
@@ -352,12 +346,6 @@ class Reader implements ReaderInterface
      */
     protected function getBrowserParentId($userAgent)
     {
-        if (!is_string($userAgent)) {
-            throw new InvalidArgumentException(
-                "Invalid type '" . gettype($userAgent) . "' for argument 'userAgent'."
-            );
-        }
-
         if ($this->browserParentId === null) {
             $this->findBrowser($userAgent);
         }
