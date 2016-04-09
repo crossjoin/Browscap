@@ -116,7 +116,7 @@ class Formatter implements FormatterInterface
         $newKey = $key;
         if (($this->getOptions() & self::KEY_LOWER) > 0) {
             $newKey = strtolower($key);
-        } elseif(($this->getOptions() & self::KEY_UPPER) > 0) {
+        } elseif (($this->getOptions() & self::KEY_UPPER) > 0) {
             $newKey = strtoupper($key);
         }
 

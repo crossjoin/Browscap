@@ -27,7 +27,7 @@ class PhpGetBrowser extends Formatter
             );
         }
 
-        $options = self::KEY_LOWER | self::VALUE_BOOLEAN_TO_STRING  | self::VALUE_REG_EXP_LOWER;
+        $options = self::KEY_LOWER | self::VALUE_BOOLEAN_TO_STRING | self::VALUE_REG_EXP_LOWER;
         if ($returnArray) {
             $options |= self::RETURN_ARRAY;
         } else {

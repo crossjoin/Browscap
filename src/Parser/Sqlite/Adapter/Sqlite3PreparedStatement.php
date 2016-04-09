@@ -11,7 +11,7 @@ namespace Crossjoin\Browscap\Parser\Sqlite\Adapter;
 class Sqlite3PreparedStatement implements PreparedStatementInterface
 {
     /**
-     * @var \PDOStatement
+     * @var \SQLite3Stmt
      */
     protected $statement;
 
@@ -49,7 +49,7 @@ class Sqlite3PreparedStatement implements PreparedStatementInterface
     public function execute(array $params = [])
     {
         foreach ($params as $paramName => $paramValue) {
-            $type = is_int($paramValue) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            $type = is_int($paramValue) ? \SQLITE3_INTEGER : \SQLITE3_TEXT;
             $this->getStatement()->bindValue($paramName, $paramValue, $type);
         }
         $result = $this->getStatement()->execute();
