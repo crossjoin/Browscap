@@ -7,7 +7,6 @@ use Crossjoin\Browscap\Exception\ParserConfigurationException;
 use Crossjoin\Browscap\Exception\UnexpectedValueException;
 use Crossjoin\Browscap\Parser\ParserInterface;
 use Crossjoin\Browscap\Parser\ReaderInterface;
-use Crossjoin\Browscap\Parser\Sqlite\Adapter\AdapterInterface;
 use Crossjoin\Browscap\Parser\WriterInterface;
 use Crossjoin\Browscap\PropertyFilter\PropertyFilterInterface;
 use Crossjoin\Browscap\PropertyFilter\PropertyFilterTrait;
