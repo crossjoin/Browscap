@@ -174,9 +174,9 @@ class Update extends Command
         $type    = $browscap->getParser()->getReader()->getType();
         $name    = Type::getName($type);
         if ($updated === true) {
-            $output->writeln("Browscap data successfully updated. New version: $version ($name)");
+            $output->writeln(sprintf('Browscap data successfully updated. New version: %s (%s)', $version, $name));
         } else {
-            $output->writeln("Nothing to update. Current version: $version ($name)");
+            $output->writeln(sprintf('Nothing to update. Current version: %s (%s)', $version, $name));
         }
     }
 }
