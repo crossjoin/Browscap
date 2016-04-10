@@ -436,7 +436,7 @@ $browscap = new \Crossjoin\Browscap\Browscap();
 $type = \Crossjoin\Browscap\Type::STANDARD;
 $clientSettings = ['proxy' => 'tcp://localhost:8125'];
 $source = new \Crossjoin\Browscap\Source\Ini\BrowscapOrg($type, $clientSettings);
-$browscap->setParser($parser);
+$browscap->getParser()->setSource($source);
  
 // Get properties...
 $settings = $browscap->getBrowser();
