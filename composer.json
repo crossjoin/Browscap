@@ -33,6 +33,7 @@
     },
     "require": {
         "php": "~7.0",
+        "hhvm": "~3.6.6",
         "guzzlehttp/guzzle": "~6.0.2",
         "symfony/console": "^2.8|^3.0"
     },
