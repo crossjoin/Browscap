@@ -1,7 +1,7 @@
 # Browscap Parsing Class
 
 [![Author](http://img.shields.io/badge/author-@cziegenberg-blue.svg?style=flat-square)](https://twitter.com/cziegenberg)
-[![Quality Score](https://img.shields.io/scrutinizer/g/crossjoin/Browscap.svg?style=flat-square)](https://scrutinizer-ci.com/g/crossjoin/Browscap)
+[![Quality Score](https://img.shields.io/scrutinizer/g/crossjoin/Browscap/2.x.svg?style=flat-square)](https://scrutinizer-ci.com/g/crossjoin/Browscap)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/crossjoin/Browscap.svg?style=flat-square)](https://packagist.org/packages/crossjoin/Browscap)
 [![Total Downloads](https://img.shields.io/packagist/dt/crossjoin/Browscap.svg?style=flat-square)](https://packagist.org/packages/crossjoin/Browscap)
@@ -11,47 +11,46 @@
 Crossjoin\Browscap allows to check for browser settings based on the user agent string, using the data from
 the [Browser Capabilities Project](browscap.org).
 
-Although PHP has the native [`get_browser()`](http://php.net/get_browser) function to do this, this implementation 
+Although PHP has the native [`get_browser()`](http://php.net/get_browser) function to do this, this implementation
 offers some advantages:
-- The PHP function requires to set the path of the browscap.ini file in the php.ini directive 
-[`browscap`](http://www.php.net/manual/en/misc.configuration.php#ini.browscap), which is flagged as `PHP_INI_SYSTEM` 
-(so it can only be set in php.ini or httpd.conf, which isn't allowed in many cases, e.g. in shared hosting 
+- The PHP function requires to set the path of the browscap.ini file in the php.ini directive
+[`browscap`](http://www.php.net/manual/en/misc.configuration.php#ini.browscap), which is flagged as `PHP_INI_SYSTEM`
+(so it can only be set in php.ini or httpd.conf, which isn't allowed in many cases, e.g. in shared hosting
 environments).
 - It's much faster than the PHP function (several hundred times, depending on the PHP version, the searched user agent
 and other factors)
-- It includes automatic updates of the Browscap source data
+- It allows automatic updates of the Browscap source data, so you're always up-to-date.
 
-Compared to other PHP Browscap parsers, this implementation offers the following advantages
-- The default parser very fast due to optimized storage in an internal SQLite database
-- It supports the PHP versions 5.6.x to 7.0.x and uses newest available features for best performance
-- It has a very low memory consumption (for parsing and generating parser data)
-- All components are extensible - use your own source, parser (writer and reader) or formatter
-- Use property filters to remove unnecessary Browscap properties from the parser data or the output.
+Compared to other PHP Browscap parsers, this implementation offers the following advantages:
+- The default parser is very fast due to optimized storage in an internal SQLite database.
+- It supports the PHP versions 5.6.x to 7.0.x and uses newest available features for best performance.
+- It has a very low memory consumption (for parsing and generating parser data).
+- All components are extensible - use your own source, parser (writer and reader) or formatter.
+- Use property filters to remove unnecessary Browscap properties from the parser data and/or the output.
 - Either use the auto-update feature or run updates via command-line instead.
 
 You can also switch the type of data set to use:
-- The `lite` data set (with the most important user agent patterns only and the default properties)
-- The `standard` data set (containing all known user agent patterns and the default properties)
-- The `full` data set (with all known user agent patterns and additional properties)
-- The parsing time increases with the number of user agent patterns contained in the source, but it's fast for all
-versions.
+- The `standard` data set (standard set of browser properties)
+- The `lite` data set (reduced set of browser properties)
+- The `full` data set (additional browser properties)
+- Tip: Use the smallest possible data set for best performance, because the more detailed the data, the more user agents needs to be compared.
 
 ## Requirements
 - PHP >= 5.6 (support for older versions see below)
 - The 'pdo_sqlite' or 'sqlite3' extension (please not that this is not checked on composer install/update,
-because only one of these extension is required and composer doesn't support this).
+because only one of these extension is required and composer doesn't support this type of requirement).
 - For updates via download: cURL extension, `allow_url_fopen` enabled in php.ini (for more details see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/))
 
 ### Releases for older PHP Versions
 - For older PHP versions see [Crossjoin\Browscap 1.x](https://github.com/crossjoin/Browscap/tree/1.x)
 
 ## Package installation
-Crossjoin\Browscap is provided as a Composer package which can be installed by adding the package to your composer.json 
+Crossjoin\Browscap is provided as a [Composer](https://getcomposer.org) package which can be installed by adding the package to your composer.json
 file:
 ```php
 {
     "require": {
-        "crossjoin/browscap": "~2.0.0"
+        "crossjoin/browscap": "~3.0.0"
     }
 }
 ```
@@ -60,7 +59,7 @@ file:
 
 ### Simple example
 
-You can directly use the Browscap parser. If the data for the parser are missing, they will be created automatically
+Normally you can directly use the Browscap parser. Missing data for the parser will be created automatically
 if possible (trying several available options).
 
 ```php
@@ -73,11 +72,14 @@ $browscap = new \Crossjoin\Browscap\Browscap();
  
 // Get current browser details (taken from $_SERVER['HTTP_USER_AGENT'])
 $settings = $browscap->getBrowser();
+ 
+// or explicitly set the user agent to check
+$settings = $browscap->getBrowser('user agent string');
 ```
 
 ### Automatic updates
 
-Although missing data are created automatically, automatic updates are disabled by default (which is different
+Although missing data are created automatically, the update automatic update is disabled by default (which is different
 from version 1.x). To activate automatic updates, you must set the update probability.
 
 ```php
@@ -113,7 +115,8 @@ $forceUpdate = false; // If you do not force an update, it will only be done if 
 $browscap->update($forceUpdate);
 ```
 
-or via the command-line interface (normally you will find 'browscap' or 'browscap.bat' in composers 'vendor/bin/'):
+or via the command-line interface (you will find the 'browscap' or 'browscap.bat' in Composers bin directory,
+normally `vendor/bin`):
 ```
 browscap update [--force]
 ```
@@ -122,8 +125,9 @@ browscap update [--force]
 
 ### Replacement for the PHP get_browser() function
 
-The returned setting are by default formatted like the result of the PHP get_browser() function (an default object
-with values in a special format). You can also get an array as return value, by modifying the formatter:
+By default the returned settings are formatted like the result of the PHP get_browser() function. So you will get an
+standard PHP object, with a special property/property value format. As with get_browser(), you can also get an array
+as return value by modifying the formatter:
 
 ```php
 <?php
@@ -144,7 +148,8 @@ $browscap->setFormatter($arrayFormatter);
 $settings = $browscap->getBrowser();
 ```
 
-Alternatively you can use the Browscap object as function, with the same arguments like PHPs get_browser():
+Alternatively you can use the Browscap object as a function, with the same arguments like PHP get_browser() function,
+so is't much easier to use it as a replacement:
 
 ```php
 <?php
@@ -153,20 +158,19 @@ require_once '../vendor/autoload.php';
  
 // Init
 $browscap = new \Crossjoin\Browscap\Browscap();
-$userAgent = $_SERVER['HTTP_USER_AGENT'];
  
 // Get standard object
-$settings = $browscap($userAgent);
+$settings = $browscap('user agent string');
  
 // Get array
-$settings = $browscap($userAgent, true);
+$settings = $browscap('user agent string', true);
 ```
 
 ### Optimized formatter
 
-If you want to get a better result, you should use the `Optimized` formatter. It doesn't change the keys, returns
-all values with correct types (if valid for all possible property values) and replaces 'unknown' strings with NULL
-values. It also removes no more used properties from the result (e.g. 'AolVersion').
+The standard format isn't always optimal, the new `Optimized` formatter is often the better option. It doesn't change
+the property names, returns all values with correct types (if valid for all possible property values) and replaces
+the 'unknown' strings with NULL values. It also removes no more used properties from the result set (like 'AolVersion').
 
 ```php
 <?php
@@ -186,7 +190,7 @@ $settings = $browscap->getBrowser();
 
 Of course you can also create your own formatter, either by using the general formatter
 `\Crossjoin\Browscap\Formatter\Formatter` and setting the required options (see below), or by creating a new one that
-extends the `\Crossjoin\Browscap\Formatter\FormatterInterface`:
+extends `\Crossjoin\Browscap\Formatter\FormatterInterface`:
 
 ```php
 <?php
@@ -213,8 +217,8 @@ $settings = $browscap->getBrowser();
 
 ## Property Filters
 
-As mentioned before, the `Optimized` formatter removes properties from the returned data. This
-is done by a filter, which is a new feature from version 2.x/3.x.
+As mentioned before, the `Optimized` formatter removes properties from the returned data. This is done by a filter,
+which is a new feature in version 2.x/3.x.
 
 ### Filter the output
 
@@ -257,7 +261,7 @@ $settings = $browscap->getBrowser();
 ### Filter the parser data
 
 No only the output can be filtered. You can also filter the data at a higher level, when creating his data set
-from the source (which can reduce the size of the generated data by up to 50%):
+from the source, which can reduce the size of the generated database by up to 50%:
 
 ```php
 <?php
@@ -295,7 +299,7 @@ browscap update --filter-disallowed Version,Browser,isMobileDevice
 
 ## Sources
 
-By default, the current browscap (PHP ini) source is downloaded automatically (`standard` type).
+By default, the current browscap (PHP ini variant) source is downloaded automatically (`standard` type).
 
 ### Change the downloaded source type
 
@@ -307,7 +311,7 @@ require_once '../vendor/autoload.php';
 // Init
 $browscap = new \Crossjoin\Browscap\Browscap();
  
-// Set the 'standard' source (medium data set, with default properties)
+// Set the 'standard' source (medium data set, with standard properties)
 $type = \Crossjoin\Browscap\Type::STANDARD;
 $source = new \Crossjoin\Browscap\Source\Ini\BrowscapOrg($type);
 $browscap->getParser()->setSource($source);
@@ -329,9 +333,14 @@ $settings = $browscap->getBrowser();
 
 You can also set the source type when using the command-line interface:
 ```
+browscap update --ini-load standard
+```
+```
+browscap update --ini-load lite
+```
+```
 browscap update --ini-load full
 ```
-
 
 ### Use the source file defined in the `browscap` PHP directive
 
@@ -381,7 +390,7 @@ Setting the source file is also possible when using the command-line interface:
 browscap update --ini-file path/to/browscap.ini
 ```
 
-## Misc
+## Misc settings
 
 ### Data directory
 
@@ -411,10 +420,8 @@ browscap update --dir path/to/data/directory
 
 ### Client settings for the source download
 
-If you download the source (default), you perhaps want to use a proxy or other settings for
-the client. You can do so by providing the settings for the GuzzleHttp client (see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/)):
-
-This is currently not possible when using the command line.
+If you download the source, you perhaps want to use a proxy or other settings for the client. You can do so by
+providing the settings for the GuzzleHttp client (see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/)):
 
 ```php
 <?php
@@ -428,11 +435,32 @@ $browscap = new \Crossjoin\Browscap\Browscap();
 $type = \Crossjoin\Browscap\Type::STANDARD;
 $clientSettings = ['proxy' => 'tcp://localhost:8125'];
 $source = new \Crossjoin\Browscap\Source\Ini\BrowscapOrg($type, $clientSettings);
-$browscap->setParser($parser);
+$browscap->getParser()->setSource($source);
  
 // Get properties...
 $settings = $browscap->getBrowser();
 ```
+
+Please note: Currently this is not possible when using the command-line interface.
+
+## Performance tips
+
+### Always use the smallest data set
+
+The Browscap data are available in three versions - `lite`, `standard` and `full` - with a different number
+of properties for the browsers. Of course also the database size for the parser increases with the number of
+properties contained in the source data - but this has only a small influence on the performance, it only
+affects some request when the database is not cached by PHP.
+
+More important is the number of patterns that increases with the number of properties, because the checks
+have to become more detailed to differ them. This takes the most time when parsing, because pre-filtering patterns is
+very difficult and often multiple patterns match the given user agent string - so in some cases several thousand
+patterns are checked for a single user agent string.
+
+So you should always use the smallest possible source type, because it contains the lowest number of patterns. Also
+property filters wouldn't help here - they help to reduce the database size, but not the number of patterns. For example
+if you use the `full` source type and set a filter to get ony the properties of the `lite` source type, you will get
+the same result for both types, but it will take about thrice the time for the `full` type.
 
 ## Issues and feature requests
 
