@@ -5,7 +5,7 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/crossjoin/Browscap.svg?style=flat-square)](https://packagist.org/packages/crossjoin/Browscap)
 [![Total Downloads](https://img.shields.io/packagist/dt/crossjoin/Browscap.svg?style=flat-square)](https://packagist.org/packages/crossjoin/Browscap)
-[![Build](https://img.shields.io/travis/crossjoin/Browscap/3.x.svg)](https://travis-ci.org/crossjoin/Browscap)
+[![Build](https://img.shields.io/travis/crossjoin/Browscap/master.svg)](https://travis-ci.org/crossjoin/Browscap)
 
 ## Introduction
 Crossjoin\Browscap allows to check for browser settings based on the user agent string, using the data from
