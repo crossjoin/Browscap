@@ -24,12 +24,11 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function resetAdapterClasses()
     {
-        AdapterFactory::setDefaultAdapterClasses();
+        AdapterFactory::setAdapterClasses(AdapterFactory::DEFAULT_CLASSES);
     }
 
     /**
      * @covers ::getInstance
-     * @covers ::setDefaultAdapterClasses
      * @covers ::getInstanceByClassName
      * @covers ::setAdapterClasses
      *
@@ -48,7 +47,6 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers ::getInstance
-     * @covers ::setDefaultAdapterClasses
      * @covers ::getInstanceByClassName
      * @covers ::setAdapterClasses
      *
@@ -69,7 +67,6 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Crossjoin\Browscap\Exception\ParserConditionNotSatisfiedException
      *
      * @covers ::getInstance
-     * @covers ::setDefaultAdapterClasses
      * @covers ::getInstanceByClassName
      * @covers ::setAdapterClasses
      *

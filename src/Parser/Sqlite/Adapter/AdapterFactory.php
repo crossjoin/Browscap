@@ -17,18 +17,12 @@ use Crossjoin\Browscap\Exception\UnexpectedValueException;
  */
 class AdapterFactory
 {
-    /**
-     * @var array
-     */
-    protected static $defaultAdapterClasses = [
+    const DEFAULT_CLASSES = [
         '\Crossjoin\Browscap\Parser\Sqlite\Adapter\Pdo',
         '\Crossjoin\Browscap\Parser\Sqlite\Adapter\Sqlite3',
     ];
 
-    /**
-     * @var array|null
-     */
-    protected static $adapterClasses;
+    protected static $adapterClasses = self::DEFAULT_CLASSES;
 
     /**
      * @param string $fileName
@@ -39,11 +33,6 @@ class AdapterFactory
      */
     public static function getInstance(string $fileName) : AdapterInterface
     {
-        // Initialize adapter classes
-        if (static::$adapterClasses === null) {
-            self::setDefaultAdapterClasses();
-        }
-        
         foreach (static::$adapterClasses as $className) {
             $instance = static::getInstanceByClassName($className, $fileName);
             if ($instance !== null) {
@@ -54,11 +43,6 @@ class AdapterFactory
         throw new ParserConditionNotSatisfiedException(
             "No Sqlite extension found. Either 'pdo_sqlite' or 'sqlite3' extension required."
         );
-    }
-    
-    public static function setDefaultAdapterClasses()
-    {
-        self::setAdapterClasses(self::$defaultAdapterClasses);
     }
 
     /**

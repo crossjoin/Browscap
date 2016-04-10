@@ -16,18 +16,12 @@ use Crossjoin\Browscap\Exception\UnexpectedValueException;
  */
 class SourceFactory
 {
-    /**
-     * @var array
-     */
-    protected static $defaultSourceClasses  = [
+    const DEFAULT_CLASSES = [
         '\Crossjoin\Browscap\Source\Ini\BrowscapOrg',
         '\Crossjoin\Browscap\Source\Ini\PhpSetting',
     ];
 
-    /**
-     * @var array|null
-     */
-    protected static $sourceClasses;
+    protected static $sourceClasses = self::DEFAULT_CLASSES;
 
     /**
      * @return SourceInterface
@@ -35,11 +29,6 @@ class SourceFactory
      */
     public static function getInstance() : SourceInterface
     {
-        // Initialize adapter classes
-        if (static::$sourceClasses === null) {
-            self::setDefaultSourceClasses();
-        }
-        
         foreach (static::$sourceClasses as $className) {
             $instance = static::getInstanceByClassName($className);
             if ($instance !== null) {
@@ -48,11 +37,6 @@ class SourceFactory
         }
 
         return new None();
-    }
-
-    public static function setDefaultSourceClasses()
-    {
-        self::setSourceClasses(self::$defaultSourceClasses);
     }
 
     /**

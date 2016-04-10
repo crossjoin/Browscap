@@ -23,12 +23,11 @@ class SourceFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function resetSourceClasses()
     {
-        SourceFactory::setDefaultSourceClasses();
+        SourceFactory::setSourceClasses(SourceFactory::DEFAULT_CLASSES);
     }
 
     /**
      * @covers ::getInstance
-     * @covers ::setDefaultSourceClasses
      * @covers ::getInstanceByClassName
      *
      * @throws UnexpectedValueException
@@ -41,7 +40,6 @@ class SourceFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers ::getInstance
-     * @covers ::setDefaultSourceClasses
      * @covers ::setSourceClasses
      * @covers ::getInstanceByClassName
      *
@@ -57,7 +55,6 @@ class SourceFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers ::getInstance
-     * @covers ::setDefaultSourceClasses
      * @covers ::setSourceClasses
      * @covers ::getInstanceByClassName
      *
