@@ -32,14 +32,14 @@
         "source": "https://github.com/crossjoin/Browscap"
     },
     "require": {
-        "php": "~5.6|~7.0",
-        "guzzlehttp/guzzle": "~6.0.2",
+        "php": "^5.6|^7.0",
+        "guzzlehttp/guzzle": "^6.0.2",
         "symfony/console": "^2.8|^3.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "ext-sqlite3" : "*",
-        "phpunit/phpunit" : "~5.3.0"
+        "phpunit/phpunit" : "^5.3.0"
     },
     "suggest": {
         "ext-pdo_sqlite": "Either the 'pdo_sqlite' or the 'sqlite3' extension is required.",
