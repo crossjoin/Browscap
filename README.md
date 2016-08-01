@@ -142,9 +142,7 @@ $browscap = new \Crossjoin\Browscap\Browscap();
 $settings = $browscap->getBrowser();
  
 // Get array
-$arrayFormatter = new \Crossjoin\Browscap\Formatter\PhpGetBrowser(
-    \Crossjoin\Browscap\Formatter\PhpGetBrowser::RETURN_ARRAY
-);
+$arrayFormatter = new \Crossjoin\Browscap\Formatter\PhpGetBrowser(true);
 $browscap->setFormatter($arrayFormatter);
 $settings = $browscap->getBrowser();
 ```
