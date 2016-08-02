@@ -142,12 +142,6 @@ class Parser implements ParserInterface
                 1458974127
             );
         }
-
-        if (!$this->isDirectoryReadable($directory)) {
-            throw new ParserConfigurationException("Directory '$directory' is not readable.", 1458974128);
-        } elseif (!$this->isDirectoryWritable($directory)) {
-            throw new ParserConfigurationException("Directory '$directory' is not writable.", 1458974129);
-        }
     }
 
     /**
@@ -221,7 +215,13 @@ class Parser implements ParserInterface
     public function getReader($reInitiate = false) : ReaderInterface
     {
         if ($reInitiate === true || $this->reader === null) {
-            $this->reader = new Reader($this->getDataDirectory());
+            $directory = $this->getDataDirectory();
+
+            if (!$this->isDirectoryReadable($directory)) {
+                throw new ParserConfigurationException("Directory '$directory' is not readable.", 1458974128);
+            }
+
+            $this->reader = new Reader($directory);
             $this->reader->setPropertyFilter($this->getPropertyFilter());
             $this->reader->setDataVersionHash($this->getDataVersionHash());
         }
@@ -242,7 +242,13 @@ class Parser implements ParserInterface
     public function getWriter() : WriterInterface
     {
         if ($this->writer === null) {
-            $this->writer = new Writer($this->getDataDirectory(), $this->getSource());
+            $directory = $this->getDataDirectory();
+
+            if (!$this->isDirectoryWritable($directory)) {
+                throw new ParserConfigurationException("Directory '$directory' is not writable.", 1458974129);
+            }
+
+            $this->writer = new Writer($directory, $this->getSource());
             $this->writer->setPropertyFilter($this->getPropertyFilter());
             $this->writer->setDataVersionHash($this->getDataVersionHash());
         }
