@@ -93,7 +93,7 @@ class Update extends Command
     {
         parent::interact($input, $output);
 
-        if (($input->getOption('ini-php') + $input->getOption('ini-load') + $input->getOption('ini-file')) > 1) {
+        if (((int)$input->getOption('ini-php') + (int)$input->getOption('ini-load') + (int)$input->getOption('ini-file')) > 1) {
             throw new UnexpectedValueException('Please use only one --ini-* option to set the data source.');
         }
         if (((count($input->getOption('filter-allowed')) > 0) + (count($input->getOption('filter-disallowed')) > 0)) > 1) {
