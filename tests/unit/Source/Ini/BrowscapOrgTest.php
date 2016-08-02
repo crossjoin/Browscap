@@ -101,7 +101,10 @@ class BrowscapOrgTest extends \PHPUnit_Framework_TestCase
         fseek($fp, 0);
         $stream = \GuzzleHttp\Psr7\stream_for($fp);
 
-        $mock = $this->getMock('\Crossjoin\Browscap\Source\Ini\BrowscapOrg', ['loadContent'],  [Type::STANDARD]);
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Source\Ini\BrowscapOrg')
+            ->setMethods(['loadContent'])
+            ->setConstructorArgs([Type::STANDARD])
+            ->getMock();
         $mock->expects(static::once())->method('loadContent')->willReturn($stream);
 
         /** @var BrowscapOrg $mock */
@@ -126,7 +129,10 @@ class BrowscapOrgTest extends \PHPUnit_Framework_TestCase
         $stream = \GuzzleHttp\Psr7\stream_for($fp);
         $stream ->close();
 
-        $mock = $this->getMock('\Crossjoin\Browscap\Source\Ini\BrowscapOrg', ['loadContent'],  [Type::STANDARD]);
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Source\Ini\BrowscapOrg')
+            ->setMethods(['loadContent'])
+            ->setConstructorArgs([Type::STANDARD])
+            ->getMock();
         $mock->expects(static::once())->method('loadContent')->willReturn($stream);
 
         /** @var BrowscapOrg $mock */
@@ -146,7 +152,10 @@ class BrowscapOrgTest extends \PHPUnit_Framework_TestCase
         fseek($fp, 0);
         $stream = \GuzzleHttp\Psr7\stream_for($fp);
 
-        $mock = $this->getMock('\Crossjoin\Browscap\Source\Ini\BrowscapOrg', ['loadContent'],  [Type::STANDARD]);
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Source\Ini\BrowscapOrg')
+            ->setMethods(['loadContent'])
+            ->setConstructorArgs([Type::STANDARD])
+            ->getMock();
         $mock->expects(static::once())->method('loadContent')->willReturn($stream);
 
         /** @var BrowscapOrg $mock */
@@ -171,7 +180,10 @@ class BrowscapOrgTest extends \PHPUnit_Framework_TestCase
         $stream = \GuzzleHttp\Psr7\stream_for($fp);
         $stream ->close();
 
-        $mock = $this->getMock('\Crossjoin\Browscap\Source\Ini\BrowscapOrg', ['loadContent'],  [Type::STANDARD]);
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Source\Ini\BrowscapOrg')
+            ->setMethods(['loadContent'])
+            ->setConstructorArgs([Type::STANDARD])
+            ->getMock();
         $mock->expects(static::once())->method('loadContent')->willReturn($stream);
 
         /** @var BrowscapOrg $mock */
@@ -192,7 +204,10 @@ class BrowscapOrgTest extends \PHPUnit_Framework_TestCase
         fseek($fp, 0);
         $stream = \GuzzleHttp\Psr7\stream_for($fp);
 
-        $mock = $this->getMock('\Crossjoin\Browscap\Source\Ini\BrowscapOrg', ['loadContent'],  [Type::STANDARD]);
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Source\Ini\BrowscapOrg')
+            ->setMethods(['loadContent'])
+            ->setConstructorArgs([Type::STANDARD])
+            ->getMock();
         $mock->expects(static::once())->method('loadContent')->willReturn($stream);
 
         /** @var BrowscapOrg $mock */
@@ -222,7 +237,10 @@ class BrowscapOrgTest extends \PHPUnit_Framework_TestCase
         $stream = \GuzzleHttp\Psr7\stream_for($fp);
         $stream->close();
 
-        $mock = $this->getMock('\Crossjoin\Browscap\Source\Ini\BrowscapOrg', ['loadContent'], [Type::STANDARD]);
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Source\Ini\BrowscapOrg')
+            ->setMethods(['loadContent'])
+            ->setConstructorArgs([Type::STANDARD])
+            ->getMock();
         $mock->expects(static::once())->method('loadContent')->willReturn($stream);
 
         /** @var BrowscapOrg $mock */
