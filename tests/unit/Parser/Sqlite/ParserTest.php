@@ -80,7 +80,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $directory = sys_get_temp_dir();
         
         /** @noinspection PhpUndefinedClassInspection */
-        new \MockParserNotReadable($directory);
+        /** @var Parser $parser */
+        $parser = new \MockParserNotReadable($directory);
+        $parser->getReader();
     }
 
     /**
@@ -102,7 +104,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $directory = sys_get_temp_dir();
 
         /** @noinspection PhpUndefinedClassInspection */
-        new \MockParserNotWritable($directory);
+        /** @var Parser $parser */
+        $parser = new \MockParserNotWritable($directory);
+        $parser->getWriter();
     }
 
     /**
