@@ -208,7 +208,10 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdateRequiredConditionNotSatisfiedException()
     {
-        $mock = $this->getMock('\Crossjoin\Browscap\Parser\Sqlite\Reader', ['getAdapter'], ['']);
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Parser\Sqlite\Reader')
+            ->setMethods(['getAdapter'])
+            ->setConstructorArgs([''])
+            ->getMock();
         $mock->expects(static::once())->method('getAdapter')
             ->willThrowException(new ParserConditionNotSatisfiedException());
 
