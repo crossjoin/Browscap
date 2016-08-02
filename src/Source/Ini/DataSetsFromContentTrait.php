@@ -73,6 +73,11 @@ trait DataSetsFromContentTrait
             throw new ParserRuntimeException('The data could not be parsed (no pattern found).', 1459589758);
         }
 
+        if (strpos($data, "\r\n") !== false) {
+            // if the source file was created under windows, replace the line endings
+            $data = str_replace("\r\n", "\n", $data);
+        }
+
         // Prepare the data from the data set
         list($pattern, $properties) = explode("\n", $data, 2);
         $pattern = substr($pattern, 1, -1);
