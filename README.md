@@ -23,7 +23,7 @@ and other factors)
 
 Compared to other PHP Browscap parsers, this implementation offers the following advantages:
 - The default parser is very fast due to optimized storage in an internal SQLite database.
-- It supports the PHP versions 5.6.x (version 2.x) to 7.0.x (version 3.x) and uses newest available features for best performance.
+- It supports the PHP versions 5.6.x (version 2.x) to 7.x (version 3.x) and uses newest available features for best performance.
 - It has a very low memory consumption (for parsing and generating parser data).
 - All components are extensible - use your own source, parser (writer and reader) or formatter.
 - Use property filters to remove unnecessary Browscap properties from the parser data and/or the output.
@@ -39,6 +39,7 @@ You can also switch the type of data set to use:
 - PHP 7.x (support for older versions see below)
 - The 'pdo_sqlite' or 'sqlite3' extension (please not that this is not checked on composer install/update,
 because only one of these extension is required and composer doesn't support this type of requirement).
+- The SQlite library version currently needs to be >= 3.8.3 (not the case in some systems using RHEL or CentOS).
 - For updates via download: cURL extension, `allow_url_fopen` enabled in php.ini (for more details see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/))
 
 ### Releases for older PHP Versions
