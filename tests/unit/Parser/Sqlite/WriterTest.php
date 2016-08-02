@@ -101,11 +101,10 @@ class WriterTest extends \PHPUnit_Framework_TestCase
     public function testInvalidLinkPath()
     {
         $directory = sys_get_temp_dir();
-        $mock = $this->getMock(
-            '\Crossjoin\Browscap\Parser\Sqlite\Writer',
-            ['getLinkPath'],
-            [$directory, $this->source]
-        );
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Parser\Sqlite\Writer')
+            ->setMethods(['getLinkPath'])
+            ->setConstructorArgs([$directory, $this->source])
+            ->getMock();
         $mock->expects(static::once())->method('getLinkPath')->willReturn('');
 
         $class = new \ReflectionClass('\Crossjoin\Browscap\Parser\Sqlite\Writer');
