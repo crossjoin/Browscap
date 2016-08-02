@@ -44,7 +44,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     public function testCustomParser()
     {
         /** @var ParserInterface $mock */
-        $mock = $this->getMock('\Crossjoin\Browscap\Parser\Sqlite\Parser');
+        $mock = $this->getMockBuilder('\Crossjoin\Browscap\Parser\Sqlite\Parser')->getMock();
 
         $browscap = new Browscap();
         $browscap->setParser($mock);
