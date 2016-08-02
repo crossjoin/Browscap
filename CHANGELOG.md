@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 3.0.3 - 2016-08-02
+- Fix: Adjustment to avoid warnings in PHP 7.1.x when using the CLI version.
+
 ## Version 3.0.2 - 2016-08-02
 - Fix: Corrected the check for directory permissions, so that directories don't have to be writable if only used in read-only mode (issue #26).
 - Fix: Corrected the parser for the case that the Browscap source file was generated on a Windows system and contains differend line-endings (issue #28).
