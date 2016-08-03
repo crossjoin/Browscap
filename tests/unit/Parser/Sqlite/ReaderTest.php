@@ -288,6 +288,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
      * @covers ::findBrowserInDefaultTable
      * @covers ::getPatternKeywords
      * @covers ::sortProperties
+     * @covers ::getSqliteVersion
      * @covers \Crossjoin\Browscap\Source\Ini\GetRegExpForPatternTrait::getRegExpForPattern
      *
      * @throws ParserConditionNotSatisfiedException
@@ -299,6 +300,48 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $result = $this->reader->getBrowser(self::USER_AGENT);
 
         static::assertInternalType('array', $result);
+        static::assertEquals(
+            'Mozilla/5.0 (*Windows NT 10.0*rv:45.0*) Gecko* Firefox*',
+            $result['browser_name_pattern']
+        );
+    }
+
+    /**
+     * @covers ::getBrowser
+     * @covers ::getBrowserId
+     * @covers ::getBrowserParentId
+     * @covers ::findBrowser
+     * @covers ::findBrowserInKeywordTables
+     * @covers ::findBrowserInDefaultTable
+     * @covers ::getPatternKeywords
+     * @covers ::sortProperties
+     * @covers ::getSqliteVersion
+     * @covers \Crossjoin\Browscap\Source\Ini\GetRegExpForPatternTrait::getRegExpForPattern
+     *
+     * @throws ParserConditionNotSatisfiedException
+     * @throws ParserRuntimeException
+     * @throws UnexpectedValueException
+     */
+    public function testKnownBrowserWithOldSqliteVersion()
+    {
+        $directory = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR .
+            'parser' . DIRECTORY_SEPARATOR . Parser::SUB_DIRECTORY;
+
+        $reader = $this->getMockBuilder('\Crossjoin\Browscap\Parser\Sqlite\Reader')
+            ->setConstructorArgs([$directory])
+            ->setMethods(['getSqliteVersion'])
+            ->getMock();
+
+        $reader->expects(static::any())->method('isFileReadable')->willReturn('3.6.20');
+
+        /** @var Reader $reader */
+        $result = $reader->getBrowser(self::USER_AGENT);
+
+        static::assertInternalType('array', $result);
+        static::assertEquals(
+            'Mozilla/5.0 (*Windows NT 10.0*rv:45.0*) Gecko* Firefox*',
+            $result['browser_name_pattern']
+        );
     }
 
     /**
