@@ -50,6 +50,11 @@ class Reader implements ReaderInterface
      * @var array
      */
     protected $browserPatternKeywords;
+
+    /**
+     * @var string
+     */
+    protected $sqliteVersion;
     
     /**
      * Writer constructor.
@@ -268,29 +273,68 @@ class Reader implements ReaderInterface
         $browserParentId = $this->getBrowserParentId($userAgent);
 
         // Get all settings for the found browser
-        $query  = 'SELECT t3.property_key, t4.property_value FROM (';
-        $query .= 'WITH RECURSIVE browser_recursive(browser_id,browser_parent_id) AS (';
-        $query .= 'SELECT browser_id, browser_parent_id FROM browser WHERE browser_id = :id';
-        $query .= ' UNION ALL ';
-        $query .= 'SELECT browser.browser_id, browser.browser_parent_id FROM browser, browser_recursive ';
-        $query .= 'WHERE browser_recursive.browser_parent_id IS NOT NULL ';
-        $query .= 'AND browser.browser_id = browser_recursive.browser_parent_id';
-        $query .= ') ';
-        $query .= 'SELECT MAX(t2.browser_id) AS browser_id, t2.property_key_id FROM browser_recursive t1 ';
-        $query .= 'JOIN browser_property t2 ON t2.browser_id = t1.browser_id ';
-        $query .= 'GROUP BY t2.property_key_id';
-        $query .= ') t1 ';
-        $query .= 'JOIN browser_property t2 ON t2.browser_id = t1.browser_id ';
-        $query .= 'AND t2.property_key_id = t1.property_key_id ';
-        $query .= 'JOIN browser_property_key t3 ON t3.property_key_id = t2.property_key_id ';
-        $query .= 'JOIN browser_property_value t4 ON t4.property_value_id = t2.property_value_id';
-        $query .= ' UNION ALL ';
-        $query .= 'SELECT \'browser_name_pattern\' AS property_key, browser_pattern AS property_value ';
-        $query .= 'FROM browser WHERE browser_id = :id';
-        $query .= ' UNION ALL ';
-        $query .= 'SELECT \'Parent\' AS property_key, browser_pattern AS property_value ';
-        $query .= 'FROM browser WHERE browser_id = :parent';
-        $statement = $this->getAdapter()->prepare($query);
+        //
+        // It's best to use a recursive query here, but some linux distributions like CentOS and RHEL
+        // use old sqlite library versions (like 3.6.20 or 3.7.17), so that we have to check the
+        // version here and fall back to multiple single queries in case of older versions.
+        if (version_compare($this->getSqliteVersion(), '3.8.3', '>=')) {
+            $query  = 'SELECT t3.property_key, t4.property_value FROM (';
+            $query .= 'WITH RECURSIVE browser_recursive(browser_id,browser_parent_id) AS (';
+            $query .= 'SELECT browser_id, browser_parent_id FROM browser WHERE browser_id = :id';
+            $query .= ' UNION ALL ';
+            $query .= 'SELECT browser.browser_id, browser.browser_parent_id FROM browser, browser_recursive ';
+            $query .= 'WHERE browser_recursive.browser_parent_id IS NOT NULL ';
+            $query .= 'AND browser.browser_id = browser_recursive.browser_parent_id';
+            $query .= ') ';
+            $query .= 'SELECT MAX(t2.browser_id) AS browser_id, t2.property_key_id FROM browser_recursive t1 ';
+            $query .= 'JOIN browser_property t2 ON t2.browser_id = t1.browser_id ';
+            $query .= 'GROUP BY t2.property_key_id';
+            $query .= ') t1 ';
+            $query .= 'JOIN browser_property t2 ON t2.browser_id = t1.browser_id ';
+            $query .= 'AND t2.property_key_id = t1.property_key_id ';
+            $query .= 'JOIN browser_property_key t3 ON t3.property_key_id = t2.property_key_id ';
+            $query .= 'JOIN browser_property_value t4 ON t4.property_value_id = t2.property_value_id';
+            $query .= ' UNION ALL ';
+            $query .= 'SELECT \'browser_name_pattern\' AS property_key, browser_pattern AS property_value ';
+            $query .= 'FROM browser WHERE browser_id = :id';
+            $query .= ' UNION ALL ';
+            $query .= 'SELECT \'Parent\' AS property_key, browser_pattern AS property_value ';
+            $query .= 'FROM browser WHERE browser_id = :parent';
+            $statement = $this->getAdapter()->prepare($query);
+        } else {
+            $query = 'SELECT browser_id, browser_parent_id FROM browser WHERE browser_id = :id';
+            $statement = $this->getAdapter()->prepare($query);
+            $browserIds = [];
+            $lastBrowserId = $browserId;
+            while ($lastBrowserId !== null) {
+                $result = $statement->execute(['id' => $lastBrowserId]);
+
+                $lastBrowserId = null;
+                if (count($result) > 0) {
+                    $browserIds[] = (int)$result[0]['browser_id'];
+                    if ($result[0]['browser_parent_id'] !== null) {
+                        $lastBrowserId = (int)$result[0]['browser_parent_id'];
+                    }
+                }
+            }
+
+            $query  = 'SELECT t3.property_key, t4.property_value FROM (';
+            $query .= 'SELECT MAX(browser_id) AS browser_id, property_key_id ';
+            $query .= 'FROM browser_property WHERE browser_id IN (' . implode(', ', $browserIds) . ') ';
+            $query .= 'GROUP BY property_key_id';
+            $query .= ') t1 ';
+            $query .= 'JOIN browser_property t2 ON t2.browser_id = t1.browser_id ';
+            $query .= 'AND t2.property_key_id = t1.property_key_id ';
+            $query .= 'JOIN browser_property_key t3 ON t3.property_key_id = t2.property_key_id ';
+            $query .= 'JOIN browser_property_value t4 ON t4.property_value_id = t2.property_value_id';
+            $query .= ' UNION ALL ';
+            $query .= 'SELECT \'browser_name_pattern\' AS property_key, browser_pattern AS property_value ';
+            $query .= 'FROM browser WHERE browser_id = :id';
+            $query .= ' UNION ALL ';
+            $query .= 'SELECT \'Parent\' AS property_key, browser_pattern AS property_value ';
+            $query .= 'FROM browser WHERE browser_id = :parent';
+            $statement = $this->getAdapter()->prepare($query);
+        }
 
         $properties = [];
         foreach ($statement->execute(['id' => $browserId, 'parent' => $browserParentId]) as $row) {
@@ -315,6 +359,31 @@ class Reader implements ReaderInterface
 
         // The settings are in random order, so sort them
         return $this->sortProperties($properties);
+    }
+
+    /**
+     * @return string
+     * @throws \Crossjoin\Browscap\Exception\UnexpectedValueException
+     * @throws \Crossjoin\Browscap\Exception\ParserConditionNotSatisfiedException
+     */
+    protected function getSqliteVersion()
+    {
+        if ($this->sqliteVersion === null) {
+
+            $this->sqliteVersion = '0.0.0';
+
+            // Try to get the version number
+            $query = 'SELECT sqlite_version() AS version';
+            try {
+                $result = $this->getAdapter()->query($query);
+                if (count($result) > 0) {
+                    $this->sqliteVersion = $result[0]['version'];
+                }
+            } catch (ParserRuntimeException $exception) {
+            }
+        }
+
+        return $this->sqliteVersion;
     }
 
     /**
