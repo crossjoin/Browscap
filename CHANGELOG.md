@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.0.4 - WIP
+- Feature: Added support for older SQLite versions as used by some Linux distributions like CentOS and RHEL (issue #25).
+
 ## Version 2.0.3 - 2016-08-02
 - Feature: Adjustment to avoid warnings in PHP 7.1.x when using the CLI version.
 - Fix: Added info about the required SQLite library version to the documentation.
