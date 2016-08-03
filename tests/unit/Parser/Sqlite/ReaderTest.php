@@ -332,7 +332,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getSqliteVersion'])
             ->getMock();
 
-        $reader->expects(static::any())->method('isFileReadable')->willReturn('3.6.20');
+        $reader->expects(static::any())->method('getSqliteVersion')->willReturn('3.6.20');
 
         /** @var Reader $reader */
         $result = $reader->getBrowser(self::USER_AGENT);
