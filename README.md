@@ -39,7 +39,7 @@ You can also switch the type of data set to use:
 - PHP 7.x (support for older versions see below)
 - The 'pdo_sqlite' or 'sqlite3' extension (please not that this is not checked on composer install/update,
 because only one of these extension is required and composer doesn't support this type of requirement).
-- The SQlite library version currently needs to be >= 3.8.3 (not the case in some systems using RHEL or CentOS).
+- For best performance the SQlite library version should be >= 3.8.3 (to use recursive queries).
 - For updates via download: cURL extension, `allow_url_fopen` enabled in php.ini (for more details see the [GuzzleHttp documentation](http://docs.guzzlephp.org/en/latest/))
 
 ### Releases for older PHP Versions
