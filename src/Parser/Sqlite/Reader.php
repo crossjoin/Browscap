@@ -380,6 +380,7 @@ class Reader implements ReaderInterface
                     $this->sqliteVersion = $result[0]['version'];
                 }
             } catch (ParserRuntimeException $exception) {
+                // Use default if version could not be detected
             }
         }
 
