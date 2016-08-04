@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 2.0.4 - WIP
+## Version 2.0.4 - 2016-08-04
 - Feature: Added support for older SQLite versions as used by some Linux distributions like CentOS and RHEL (issue #25).
 
 ## Version 2.0.3 - 2016-08-02
