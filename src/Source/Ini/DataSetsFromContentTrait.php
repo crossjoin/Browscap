@@ -38,14 +38,18 @@ trait DataSetsFromContentTrait
         foreach ($this->getContent() as $bytes) {
             $combinedBytes = $unprocessedBytes . $bytes;
             $patternStart = strpos($combinedBytes, '[');
+
+            $dataProcessed = false;
             if ($patternStart !== false) {
                 while (($nextPatternStart = strpos($combinedBytes, '[', $patternStart + 1)) !== false) {
                     $dataSet = substr($combinedBytes, $patternStart, $nextPatternStart - $patternStart);
                     yield $this->getDataSetFromString($dataSet);
                     $patternStart = $nextPatternStart;
+                    $dataProcessed = true;
                     $unprocessedBytes = substr($combinedBytes, $nextPatternStart);
                 }
-            } else {
+            }
+            if ($dataProcessed === false) {
                 $unprocessedBytes = $combinedBytes;
             }
         }
