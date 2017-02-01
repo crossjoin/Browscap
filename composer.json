@@ -32,7 +32,7 @@
         "source": "https://github.com/crossjoin/Browscap"
     },
     "require": {
-        "php": "^5.6|^7.0",
+        "php": "^5.6|^7.0|^7.1",
         "guzzlehttp/guzzle": "^6.0.2",
         "symfony/console": "^2.8|^3.0"
     },
