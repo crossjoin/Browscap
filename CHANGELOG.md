@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 2.0.5 - 2017-02-01
+- Fix: Error while parsing the browscap data that occurred in dependence of the source file length, e.g. with the Browscap full ini file in version 6021 (issue #34).
+- Feature: Updated composer.json to allow usage with PHP 7.1.x
+
 ## Version 2.0.4 - 2016-08-04
 - Feature: Added support for older SQLite versions as used by some Linux distributions like CentOS and RHEL (issue #25).
 
