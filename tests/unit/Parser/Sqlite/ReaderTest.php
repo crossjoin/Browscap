@@ -183,7 +183,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testNoUpdateRequired()
     {
-        $this->reader->setDataVersionHash('89f88574e39cee94e52c033f320f6cb14e1ba1a1');
+        $this->reader->setDataVersionHash('eb41f57c9fa8145ad2ef124abdaf673454afac5c');
         static::assertFalse($this->reader->isUpdateRequired());
     }
 

@@ -304,25 +304,22 @@ class Writer implements WriterInterface
         // Filter the keywords from the pattern (all strings containing of the characters a-z,
         // with at least 4 characters) and count them to check for the most important keywords
         // later.
-        if ($hasBrowscapPlaceholders === true) {
-            $this->extractKeywordsFromPattern($pattern);
-        }
+        $this->extractKeywordsFromPattern($pattern);
 
         // Save browser entry
         $this->statements['browser']->execute(['id' => $browserId, 'parent' => $parentId, 'pattern' => $pattern]);
 
-        // Optimization: Do not save patterns that are used as parents, assuming that every 'real' pattern
-        // contains a browscap placeholder.
+        // Removed 'optimization': Previously patterns without a browscap placeholder like '*' were
+        // ignored, assuming that these are only used as parents, but there are about 20 'real'
+        // patterns without palceholders.
         //
         // We use the GLOB function in Sqlite, but this is case-sensitive. So we lower-case the pattern here
         // (and later, when searching for it).
-        if ($hasBrowscapPlaceholders === true) {
-            $this->statements['search']->execute([
-                    'id' => $browserId,
-                    'length' => strlen(str_replace('*', '', $pattern)),
-                    'pattern' => strtolower($pattern)]
-            );
-        }
+        $this->statements['search']->execute([
+            'id' => $browserId,
+            'length' => strlen(str_replace('*', '', $pattern)),
+            'pattern' => strtolower($pattern)]
+        );
 
         // Save all properties for the current pattern
         foreach ($propertyIds as $keyId => $valueId) {

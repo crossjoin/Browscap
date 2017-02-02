@@ -479,7 +479,13 @@ class Reader implements ReaderInterface
     {
         // Build query with default table
         $query  = 'SELECT t2.browser_id, t2.browser_parent_id FROM ';
-        $query .= '(SELECT MIN(browser_id) AS browser_id FROM search WHERE :agent GLOB browser_pattern) t1 ';
+        $query .= '(';
+        $query .= 'SELECT browser_id ';
+        $query .= 'FROM search ';
+        $query .= 'WHERE :agent GLOB browser_pattern ';
+        $query .= 'ORDER BY browser_pattern_length DESC, browser_id ';
+        $query .= 'LIMIT 1';
+        $query .= ') t1 ';
         $query .= 'JOIN browser t2 ON t2.browser_id = t1.browser_id';
         $statement = $this->getAdapter()->prepare($query);
 

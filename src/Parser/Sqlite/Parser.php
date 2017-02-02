@@ -33,7 +33,7 @@ class Parser implements ParserInterface
      * Version that is saved in the generated data. Has to be increased
      * to trigger the invalidation of the data.
      */
-    const VERSION = '1.0.0';
+    const VERSION = '1.1.0';
 
     /**
      * @var SourceInterface
