@@ -9,7 +9,7 @@
 
 ## Introduction
 Crossjoin\Browscap allows to check for browser settings based on the user agent string, using the data from
-the [Browser Capabilities Project](browscap.org).
+the [Browser Capabilities Project](http://browscap.org).
 
 Although PHP has the native [`get_browser()`](http://php.net/get_browser) function to do this, this implementation 
 offers some advantages:
